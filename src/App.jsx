@@ -2,8 +2,9 @@ import { useState, useMemo } from "react";
 import { PROGRAM, TIERS, dayKeyForToday } from "./data.js";
 import { useLog } from "./useLog.js";
 import RestTimer from "./RestTimer.jsx";
+import IntervalDay from "./IntervalDay.jsx";
 
-const DAY_KEYS = ["mon", "tue", "thu"];
+const DAY_KEYS = ["mon", "tue", "thu", "fri"];
 
 function fmtDate(iso) {
   const d = new Date(iso);
@@ -11,16 +12,19 @@ function fmtDate(iso) {
 }
 
 function ExerciseRow({ exercise, tier, addEntry, lastFor }) {
+  const variants = useMemo(() => [exercise, ...(exercise.alternates || [])], [exercise]);
+  const [variantIndex, setVariantIndex] = useState(0);
+  const active = variants[variantIndex];
   const [weight, setWeight] = useState("");
   const [reps, setReps] = useState("");
   const [logged, setLogged] = useState(false);
-  const last = lastFor(exercise.name);
+  const last = lastFor(active.name);
 
   function submit(e) {
     e.preventDefault();
     if (!weight && !reps) return;
     addEntry({
-      exerciseName: exercise.name,
+      exerciseName: active.name,
       weight: weight ? Number(weight) : null,
       reps: reps ? Number(reps) : null,
     });
@@ -33,8 +37,22 @@ function ExerciseRow({ exercise, tier, addEntry, lastFor }) {
   return (
     <div className="exercise-row" style={tier ? { borderLeftColor: TIERS[tier].color } : undefined}>
       <div className="exercise-info">
-        <div className="exercise-name">{exercise.name}</div>
-        <div className="exercise-target">{exercise.target}</div>
+        {variants.length > 1 && (
+          <div className="variant-picker">
+            {variants.map((v, i) => (
+              <button
+                type="button"
+                key={v.name}
+                className={`chip chip-sm ${i === variantIndex ? "chip-active" : ""}`}
+                onClick={() => setVariantIndex(i)}
+              >
+                {v.name}
+              </button>
+            ))}
+          </div>
+        )}
+        <div className="exercise-name">{active.name}</div>
+        <div className="exercise-target">{active.target}</div>
         {last && (
           <div className="exercise-last">
             Last: {last.weight ? `${last.weight} lb` : ""}{last.weight && last.reps ? " × " : ""}{last.reps ? `${last.reps} reps` : ""} · {fmtDate(last.date)}
@@ -94,31 +112,37 @@ function WorkoutView({ addEntry, lastFor, onOpenTimer }) {
         <div className="day-duration">{day.duration}</div>
       </div>
 
-      {day.blocks.map((block) => (
-        <section key={block.title} className="block">
-          <div className="block-header">
-            <h3>{block.title}</h3>
-            {block.tier && (
-              <span className="tier-badge" style={{ background: TIERS[block.tier].color }}>
-                {TIERS[block.tier].label}
-              </span>
-            )}
-          </div>
-          {block.exercises.map((ex) => (
-            <ExerciseRow
-              key={ex.name}
-              exercise={ex}
-              tier={block.tier}
-              addEntry={addEntry}
-              lastFor={lastFor}
-            />
+      {day.type === "interval" ? (
+        <IntervalDay protocol={day.protocol} addEntry={addEntry} lastFor={lastFor} />
+      ) : (
+        <>
+          {day.blocks.map((block) => (
+            <section key={block.title} className="block">
+              <div className="block-header">
+                <h3>{block.title}</h3>
+                {block.tier && (
+                  <span className="tier-badge" style={{ background: TIERS[block.tier].color }}>
+                    {TIERS[block.tier].label}
+                  </span>
+                )}
+              </div>
+              {block.exercises.map((ex) => (
+                <ExerciseRow
+                  key={ex.name}
+                  exercise={ex}
+                  tier={block.tier}
+                  addEntry={addEntry}
+                  lastFor={lastFor}
+                />
+              ))}
+            </section>
           ))}
-        </section>
-      ))}
 
-      <button className="fab" onClick={onOpenTimer} aria-label="Open rest timer">
-        ⏱
-      </button>
+          <button className="fab" onClick={onOpenTimer} aria-label="Open rest timer">
+            ⏱
+          </button>
+        </>
+      )}
     </div>
   );
 }
@@ -147,7 +171,9 @@ function HistoryView({ entries, removeEntry }) {
             <div key={e.id} className="history-row">
               <span className="history-name">{e.exerciseName}</span>
               <span className="history-value">
-                {e.weight ? `${e.weight} lb` : ""}{e.weight && e.reps ? " × " : ""}{e.reps ? `${e.reps} reps` : ""}
+                {e.modality
+                  ? `${e.modality}${e.rpe ? ` · RPE ${e.rpe}` : ""}`
+                  : `${e.weight ? `${e.weight} lb` : ""}${e.weight && e.reps ? " × " : ""}${e.reps ? `${e.reps} reps` : ""}`}
               </span>
               <button className="history-remove" onClick={() => removeEntry(e.id)} aria-label="Delete entry">
                 ×

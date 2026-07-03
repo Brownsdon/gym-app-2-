@@ -370,6 +370,18 @@ button:focus-visible, input:focus-visible {
   color: var(--ink);
 }
 
+.chip-sm {
+  padding: 3px 9px;
+  font-size: 11px;
+}
+
+.variant-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 5px;
+}
+
 .timer-controls {
   display: flex;
   gap: 10px;
@@ -428,6 +440,60 @@ button:focus-visible, input:focus-visible {
   color: var(--ink-soft);
   font-size: 14px;
   padding: 40px 0;
+  text-align: center;
+}
+
+.interval-day {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 24px 20px;
+  text-align: center;
+}
+
+.interval-status {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--ink-soft);
+  margin-bottom: 6px;
+}
+
+.interval-day .timer-ring-wrap { margin: 4px auto 18px; }
+
+.timer-ring-rest { stroke: var(--rehab); }
+
+.interval-log {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left;
+}
+
+.interval-log-row {
+  display: flex;
+  gap: 8px;
+}
+
+.log-select {
+  flex: 1;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-size: 13px;
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.interval-modality-input { flex: 1; width: auto; }
+
+.interval-notes { width: 100%; text-align: left; }
+
+.interval-log-btn { width: 100%; }
+
+.interval-last {
+  margin-top: 14px;
   text-align: center;
 }
 
