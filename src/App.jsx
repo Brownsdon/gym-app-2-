@@ -15,6 +15,7 @@ function ExerciseRow({ exercise, tier, addEntry, lastFor }) {
   const variants = useMemo(() => [exercise, ...(exercise.alternates || [])], [exercise]);
   const [variantIndex, setVariantIndex] = useState(0);
   const active = variants[variantIndex];
+  const isCheck = active.logType === "check";
   const [weight, setWeight] = useState("");
   const [reps, setReps] = useState("");
   const [logged, setLogged] = useState(false);
@@ -32,6 +33,12 @@ function ExerciseRow({ exercise, tier, addEntry, lastFor }) {
     setTimeout(() => setLogged(false), 1400);
     setWeight("");
     setReps("");
+  }
+
+  function markDone() {
+    addEntry({ exerciseName: active.name, done: true });
+    setLogged(true);
+    setTimeout(() => setLogged(false), 1400);
   }
 
   return (
@@ -55,31 +62,45 @@ function ExerciseRow({ exercise, tier, addEntry, lastFor }) {
         <div className="exercise-target">{active.target}</div>
         {last && (
           <div className="exercise-last">
-            Last: {last.weight ? `${last.weight} lb` : ""}{last.weight && last.reps ? " × " : ""}{last.reps ? `${last.reps} reps` : ""} · {fmtDate(last.date)}
+            {isCheck
+              ? `Done · ${fmtDate(last.date)}`
+              : `Last: ${last.weight ? `${last.weight} lb` : ""}${last.weight && last.reps ? " × " : ""}${last.reps ? `${last.reps} reps` : ""} · ${fmtDate(last.date)}`}
           </div>
         )}
       </div>
-      <form className="exercise-log" onSubmit={submit}>
-        <input
-          type="number"
-          inputMode="decimal"
-          placeholder="lb"
-          value={weight}
-          onChange={(e) => setWeight(e.target.value)}
-          className="log-input"
-        />
-        <input
-          type="number"
-          inputMode="numeric"
-          placeholder="reps"
-          value={reps}
-          onChange={(e) => setReps(e.target.value)}
-          className="log-input log-input-small"
-        />
-        <button type="submit" className={`btn btn-log ${logged ? "btn-log-done" : ""}`}>
-          {logged ? "✓" : "Log"}
-        </button>
-      </form>
+      {isCheck ? (
+        <div className="exercise-log">
+          <button
+            type="button"
+            className={`btn btn-log btn-check ${logged ? "btn-log-done" : ""}`}
+            onClick={markDone}
+          >
+            {logged ? "✓" : "Done"}
+          </button>
+        </div>
+      ) : (
+        <form className="exercise-log" onSubmit={submit}>
+          <input
+            type="number"
+            inputMode="decimal"
+            placeholder="lb"
+            value={weight}
+            onChange={(e) => setWeight(e.target.value)}
+            className="log-input"
+          />
+          <input
+            type="number"
+            inputMode="numeric"
+            placeholder="reps"
+            value={reps}
+            onChange={(e) => setReps(e.target.value)}
+            className="log-input log-input-small"
+          />
+          <button type="submit" className={`btn btn-log ${logged ? "btn-log-done" : ""}`}>
+            {logged ? "✓" : "Log"}
+          </button>
+        </form>
+      )}
     </div>
   );
 }
@@ -173,6 +194,8 @@ function HistoryView({ entries, removeEntry }) {
               <span className="history-value">
                 {e.modality
                   ? `${e.modality}${e.rpe ? ` · RPE ${e.rpe}` : ""}`
+                  : e.done
+                  ? "✓ Done"
                   : `${e.weight ? `${e.weight} lb` : ""}${e.weight && e.reps ? " × " : ""}${e.reps ? `${e.reps} reps` : ""}`}
               </span>
               <button className="history-remove" onClick={() => removeEntry(e.id)} aria-label="Delete entry">

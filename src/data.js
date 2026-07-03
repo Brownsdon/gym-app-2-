@@ -10,10 +10,12 @@ export const TIERS = {
   compound: { label: "Compound Strength", short: "T3", color: "#3a4a63" },
 };
 
+// logType: "check" — bodyweight mobility drills logged as done/not-done,
+// no weight or rep count to track.
 const WARMUP = [
-  { name: "Prone Press Ups", target: "10 reps, 2s hold, 2 sets" },
-  { name: "Book Opener Stretch", target: "8 each side, 2 sets" },
-  { name: "90/90 Hip Mobility", target: "6 each side" },
+  { name: "Prone Press Ups", target: "10 reps, 2s hold, 2 sets", logType: "check" },
+  { name: "Book Opener Stretch", target: "8 each side, 2 sets", logType: "check" },
+  { name: "90/90 Hip Mobility", target: "6 each side", logType: "check" },
 ];
 
 export const PROGRAM = {

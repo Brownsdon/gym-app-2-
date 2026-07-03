@@ -249,6 +249,10 @@ button:focus-visible, input:focus-visible {
   background: var(--rehab);
 }
 
+.btn-check {
+  min-width: 64px;
+}
+
 .btn-primary {
   background: var(--accent);
   color: white;
