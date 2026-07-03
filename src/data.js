@@ -1,7 +1,7 @@
-// Richard's physio-certified program, built with Claire.
+// Richard's physio-certified program.
 // Tiers: rehab (non-negotiable) -> core (anti-rotation) -> compound (strength)
 // 4-day week: Mon hip/rehab, Tue + Thu compound, Fri VO2max intervals.
-// Exercises with "alternates" are options Claire prescribed as interchangeable —
+// Exercises with "alternates" are options prescribed as interchangeable —
 // pick whichever variant that day in the app.
 
 export const TIERS = {
@@ -74,8 +74,11 @@ export const PROGRAM = {
         title: "Lower",
         tier: "compound",
         exercises: [
-          { name: "Split Squat", target: "10 reps, 2s hold, 3 sets" },
-          { name: "Lateral Squat", target: "3 sets" },
+          {
+            name: "Split Squat",
+            target: "10 reps, 2s hold, 3 sets",
+            alternates: [{ name: "Lateral Squat", target: "3 sets" }],
+          },
           {
             name: "Single Leg Sit to Stand",
             target: "2 sets",
@@ -134,7 +137,7 @@ export const PROGRAM = {
     label: "Thursday",
     short: "Thu",
     title: "Compound B — Posterior Chain + Upper Push",
-    note: "Full session. Stop hip thrusters short of full extension until Claire clears full range.",
+    note: "Full session. Stop hip thrusters short of full extension until cleared for full range.",
     duration: "40–45 min",
     blocks: [
       { title: "Warm-up", tier: null, exercises: WARMUP },

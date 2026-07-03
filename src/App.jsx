@@ -195,7 +195,7 @@ export default function App() {
     <div className="app">
       <header className="app-header">
         <div>
-          <div className="eyebrow">Claire's Program</div>
+          <div className="eyebrow">Physio Program</div>
           <h1>Session Log</h1>
         </div>
         <nav className="tabs">

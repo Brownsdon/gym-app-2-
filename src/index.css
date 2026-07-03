@@ -371,8 +371,9 @@ button:focus-visible, input:focus-visible {
 }
 
 .chip-sm {
-  padding: 3px 9px;
-  font-size: 11px;
+  padding: 8px 12px;
+  font-size: 12px;
+  min-height: 34px;
 }
 
 .variant-picker {
