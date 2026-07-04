@@ -12,6 +12,7 @@ export const TIERS = {
 
 // logType: "check" — bodyweight mobility drills logged as done/not-done,
 // no weight or rep count to track.
+// logType: "reps" — bodyweight/band exercises logged by reps only, no weight.
 const WARMUP = [
   { name: "Prone Press Ups", target: "10 reps, 2s hold, 2 sets", logType: "check" },
   { name: "Book Opener Stretch", target: "8 each side, 2 sets", logType: "check" },
@@ -34,14 +35,16 @@ export const PROGRAM = {
           {
             name: "Hip Abduction + IR/ER",
             target: "3 sets",
-            alternates: [{ name: "Hip Abduction Rainbow", target: "3 sets" }],
+            logType: "reps",
+            alternates: [{ name: "Hip Abduction Rainbow", target: "3 sets", logType: "reps" }],
           },
           {
             name: "Airplane",
             target: "2 sets",
+            logType: "reps",
             alternates: [
-              { name: "Hip Hike + Step Down", target: "2 sets" },
-              { name: "Captain Morgan", target: "2 sets" },
+              { name: "Hip Hike + Step Down", target: "2 sets", logType: "reps" },
+              { name: "Captain Morgan", target: "2 sets", logType: "reps" },
             ],
           },
         ],
@@ -49,7 +52,7 @@ export const PROGRAM = {
       {
         title: "Core",
         tier: "core",
-        exercises: [{ name: "Ab Roll with Wheel", target: "2 sets" }],
+        exercises: [{ name: "Ab Roll with Wheel", target: "2 sets", logType: "reps" }],
       },
       {
         title: "If time — Upper",
@@ -58,7 +61,7 @@ export const PROGRAM = {
           {
             name: "Lat Pull Down",
             target: "2–3 sets",
-            alternates: [{ name: "Pull Ups", target: "2–3 sets, 8–10 reps" }],
+            alternates: [{ name: "Pull Ups", target: "2–3 sets, 8–10 reps", logType: "reps" }],
           },
         ],
       },
@@ -98,7 +101,7 @@ export const PROGRAM = {
         tier: "core",
         exercises: [
           { name: "Cable Chop, High to Low", target: "2 sets" },
-          { name: "Ab Roll with Wheel", target: "2 sets" },
+          { name: "Ab Roll with Wheel", target: "2 sets", logType: "reps" },
           { name: "Palloff Press", target: "2 sets" },
         ],
       },
@@ -117,9 +120,9 @@ export const PROGRAM = {
           {
             name: "Lat Pull Down",
             target: "10 reps, 2s hold, 3 sets",
-            alternates: [{ name: "Pull Ups", target: "3 sets, 8–10 reps" }],
+            alternates: [{ name: "Pull Ups", target: "3 sets, 8–10 reps", logType: "reps" }],
           },
-          { name: "Supermans (hold + swimmers)", target: "2 sets" },
+          { name: "Supermans (hold + swimmers)", target: "2 sets", logType: "reps" },
         ],
       },
       {
@@ -129,7 +132,8 @@ export const PROGRAM = {
           {
             name: "Hip Abduction + IR/ER",
             target: "3 sets",
-            alternates: [{ name: "Hip Abduction Rainbow", target: "3 sets" }],
+            logType: "reps",
+            alternates: [{ name: "Hip Abduction Rainbow", target: "3 sets", logType: "reps" }],
           },
         ],
       },
@@ -157,8 +161,12 @@ export const PROGRAM = {
         tier: "core",
         exercises: [
           { name: "Cable Chop, Low to High", target: "2 sets" },
-          { name: "Stability Ball Figure 8s", target: "2 sets — optional, skip if short on time" },
-          { name: "Ab Roll with Wheel", target: "2 sets" },
+          {
+            name: "Stability Ball Figure 8s",
+            target: "2 sets — optional, skip if short on time",
+            logType: "reps",
+          },
+          { name: "Ab Roll with Wheel", target: "2 sets", logType: "reps" },
         ],
       },
       {
@@ -168,6 +176,7 @@ export const PROGRAM = {
           {
             name: "Push Ups",
             target: "3 sets",
+            logType: "reps",
             alternates: [{ name: "Dumbbell Chest Press", target: "3 sets" }],
           },
           { name: "Wrist Flexion Curls", target: "2 sets — add back if elbow flares" },
@@ -176,7 +185,7 @@ export const PROGRAM = {
             target: "3 sets",
             alternates: [{ name: "Reverse Fly", target: "2 sets" }],
           },
-          { name: "Supermans (legs and arms)", target: "2 sets" },
+          { name: "Supermans (legs and arms)", target: "2 sets", logType: "reps" },
         ],
       },
       {
@@ -186,7 +195,8 @@ export const PROGRAM = {
           {
             name: "Hip Abduction Rainbow",
             target: "3 sets",
-            alternates: [{ name: "Hip Abduction + IR/ER", target: "3 sets" }],
+            logType: "reps",
+            alternates: [{ name: "Hip Abduction + IR/ER", target: "3 sets", logType: "reps" }],
           },
         ],
       },

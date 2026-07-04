@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { PROGRAM, TIERS, dayKeyForToday } from "./data.js";
 import { useLog } from "./useLog.js";
 import RestTimer from "./RestTimer.jsx";
@@ -17,17 +17,24 @@ function ExerciseRow({ exercise, tier, addEntry, lastFor }) {
   const [variantIndex, setVariantIndex] = useState(0);
   const active = variants[variantIndex];
   const isCheck = active.logType === "check";
+  const isRepsOnly = active.logType === "reps";
   const [weight, setWeight] = useState("");
   const [reps, setReps] = useState("");
   const [logged, setLogged] = useState(false);
   const last = lastFor(active.name);
   // Prefill from the previous session so a repeat set is a single tap on Log.
-  const lastWeight = last && last.weight != null ? last.weight : null;
+  const lastWeight = !isRepsOnly && last && last.weight != null ? last.weight : null;
   const lastReps = last && last.reps != null ? last.reps : null;
+
+  // Each variant is a different exercise — don't carry typed values across.
+  useEffect(() => {
+    setWeight("");
+    setReps("");
+  }, [variantIndex]);
 
   function submit(e) {
     e.preventDefault();
-    const w = weight ? Number(weight) : lastWeight;
+    const w = isRepsOnly ? null : weight ? Number(weight) : lastWeight;
     const r = reps ? Number(reps) : lastReps;
     if (w == null && r == null) return;
     addEntry({
@@ -86,21 +93,23 @@ function ExerciseRow({ exercise, tier, addEntry, lastFor }) {
         </div>
       ) : (
         <form className="exercise-log" onSubmit={submit}>
-          <input
-            type="number"
-            inputMode="decimal"
-            placeholder={lastWeight != null ? String(lastWeight) : "lb"}
-            value={weight}
-            onChange={(e) => setWeight(e.target.value)}
-            className="log-input"
-          />
+          {!isRepsOnly && (
+            <input
+              type="number"
+              inputMode="decimal"
+              placeholder={lastWeight != null ? String(lastWeight) : "lb"}
+              value={weight}
+              onChange={(e) => setWeight(e.target.value)}
+              className="log-input"
+            />
+          )}
           <input
             type="number"
             inputMode="numeric"
             placeholder={lastReps != null ? String(lastReps) : "reps"}
             value={reps}
             onChange={(e) => setReps(e.target.value)}
-            className="log-input log-input-small"
+            className={isRepsOnly ? "log-input" : "log-input log-input-small"}
           />
           <button type="submit" className={`btn btn-log ${logged ? "btn-log-done" : ""}`}>
             {logged ? "✓" : "Log"}
