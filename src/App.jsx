@@ -168,7 +168,35 @@ function WorkoutView({ addEntry, lastFor, onOpenTimer }) {
   );
 }
 
-function HistoryView({ entries, removeEntry }) {
+function FileSyncBar({ fileState, connectFile, reconnectFile, disconnectFile }) {
+  if (!fileState.supported) return null;
+
+  if (fileState.needsReconnect) {
+    return (
+      <div className="file-sync-bar">
+        <span>Local file access to "{fileState.fileName}" needs to be reconnected.</span>
+        <button className="btn btn-sm" onClick={reconnectFile}>Reconnect</button>
+      </div>
+    );
+  }
+
+  if (fileState.connected) {
+    return (
+      <div className="file-sync-bar">
+        <span>Synced to "{fileState.fileName}" on this device.</span>
+        <button className="btn btn-sm" onClick={disconnectFile}>Disconnect</button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="file-sync-bar">
+      <button className="btn btn-sm" onClick={connectFile}>Save history to a file on this device</button>
+    </div>
+  );
+}
+
+function HistoryView({ entries, removeEntry, fileState, connectFile, reconnectFile, disconnectFile }) {
   const grouped = useMemo(() => {
     const map = new Map();
     for (const e of entries) {
@@ -180,11 +208,27 @@ function HistoryView({ entries, removeEntry }) {
   }, [entries]);
 
   if (entries.length === 0) {
-    return <p className="empty-state">No sets logged yet. Log a weight and it'll show up here.</p>;
+    return (
+      <>
+        <FileSyncBar
+          fileState={fileState}
+          connectFile={connectFile}
+          reconnectFile={reconnectFile}
+          disconnectFile={disconnectFile}
+        />
+        <p className="empty-state">No sets logged yet. Log a weight and it'll show up here.</p>
+      </>
+    );
   }
 
   return (
     <div className="history">
+      <FileSyncBar
+        fileState={fileState}
+        connectFile={connectFile}
+        reconnectFile={reconnectFile}
+        disconnectFile={disconnectFile}
+      />
       {grouped.map(([date, items]) => (
         <div key={date} className="history-day">
           <h3 className="history-date">{date}</h3>
@@ -210,7 +254,8 @@ function HistoryView({ entries, removeEntry }) {
 }
 
 export default function App() {
-  const { entries, addEntry, removeEntry, lastFor } = useLog();
+  const { entries, addEntry, removeEntry, lastFor, fileState, connectFile, reconnectFile, disconnectFile } =
+    useLog();
   const [tab, setTab] = useState("workout");
   const [timerOpen, setTimerOpen] = useState(false);
 
@@ -241,7 +286,14 @@ export default function App() {
         {tab === "workout" ? (
           <WorkoutView addEntry={addEntry} lastFor={lastFor} onOpenTimer={() => setTimerOpen(true)} />
         ) : (
-          <HistoryView entries={entries} removeEntry={removeEntry} />
+          <HistoryView
+            entries={entries}
+            removeEntry={removeEntry}
+            fileState={fileState}
+            connectFile={connectFile}
+            reconnectFile={reconnectFile}
+            disconnectFile={disconnectFile}
+          />
         )}
       </main>
 

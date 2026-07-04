@@ -400,6 +400,26 @@ button:focus-visible, input:focus-visible {
 
 .history { margin-top: 4px; }
 
+.file-sync-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 9px 12px;
+  margin-bottom: 14px;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.btn-sm {
+  background: var(--ink);
+  color: white;
+  white-space: nowrap;
+}
+
 .history-day { margin-bottom: 18px; }
 
 .history-date {
