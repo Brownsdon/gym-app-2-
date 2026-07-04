@@ -3,6 +3,7 @@ import { PROGRAM, TIERS, dayKeyForToday } from "./data.js";
 import { useLog } from "./useLog.js";
 import RestTimer from "./RestTimer.jsx";
 import IntervalDay from "./IntervalDay.jsx";
+import ProgressView from "./ProgressView.jsx";
 
 const DAY_KEYS = ["mon", "tue", "thu", "fri"];
 
@@ -20,14 +21,19 @@ function ExerciseRow({ exercise, tier, addEntry, lastFor }) {
   const [reps, setReps] = useState("");
   const [logged, setLogged] = useState(false);
   const last = lastFor(active.name);
+  // Prefill from the previous session so a repeat set is a single tap on Log.
+  const lastWeight = last && last.weight != null ? last.weight : null;
+  const lastReps = last && last.reps != null ? last.reps : null;
 
   function submit(e) {
     e.preventDefault();
-    if (!weight && !reps) return;
+    const w = weight ? Number(weight) : lastWeight;
+    const r = reps ? Number(reps) : lastReps;
+    if (w == null && r == null) return;
     addEntry({
       exerciseName: active.name,
-      weight: weight ? Number(weight) : null,
-      reps: reps ? Number(reps) : null,
+      weight: w,
+      reps: r,
     });
     setLogged(true);
     setTimeout(() => setLogged(false), 1400);
@@ -83,7 +89,7 @@ function ExerciseRow({ exercise, tier, addEntry, lastFor }) {
           <input
             type="number"
             inputMode="decimal"
-            placeholder="lb"
+            placeholder={lastWeight != null ? String(lastWeight) : "lb"}
             value={weight}
             onChange={(e) => setWeight(e.target.value)}
             className="log-input"
@@ -91,7 +97,7 @@ function ExerciseRow({ exercise, tier, addEntry, lastFor }) {
           <input
             type="number"
             inputMode="numeric"
-            placeholder="reps"
+            placeholder={lastReps != null ? String(lastReps) : "reps"}
             value={reps}
             onChange={(e) => setReps(e.target.value)}
             className="log-input log-input-small"
@@ -274,6 +280,12 @@ export default function App() {
             Workout
           </button>
           <button
+            className={`tab ${tab === "progress" ? "tab-active" : ""}`}
+            onClick={() => setTab("progress")}
+          >
+            Progress
+          </button>
+          <button
             className={`tab ${tab === "history" ? "tab-active" : ""}`}
             onClick={() => setTab("history")}
           >
@@ -285,6 +297,8 @@ export default function App() {
       <main>
         {tab === "workout" ? (
           <WorkoutView addEntry={addEntry} lastFor={lastFor} onOpenTimer={() => setTimerOpen(true)} />
+        ) : tab === "progress" ? (
+          <ProgressView entries={entries} />
         ) : (
           <HistoryView
             entries={entries}

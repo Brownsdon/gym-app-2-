@@ -88,6 +88,13 @@ button:focus-visible, input:focus-visible {
   color: white;
 }
 
+@media (max-width: 480px) {
+  .tab {
+    padding: 8px 8px;
+    font-size: 13px;
+  }
+}
+
 .day-tabs {
   display: flex;
   gap: 8px;
@@ -399,6 +406,111 @@ button:focus-visible, input:focus-visible {
 }
 
 .history { margin-top: 4px; }
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.stat-tile {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 14px 14px 10px;
+}
+
+.stat-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-soft);
+  margin-bottom: 4px;
+}
+
+.stat-value {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+.stat-unit {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink-soft);
+}
+
+.stat-delta {
+  font-size: 12px;
+  margin-top: 3px;
+}
+
+.stat-delta-up { color: var(--rehab); }
+.stat-delta-down { color: var(--accent); }
+.stat-delta-flat { color: var(--ink-soft); }
+
+.spark-wrap {
+  position: relative;
+  margin-top: 12px;
+}
+
+.spark {
+  display: block;
+  width: 100%;
+  height: 56px;
+  touch-action: pan-y;
+}
+
+.spark-line {
+  fill: none;
+  stroke: #b4bac4;
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.spark-end-ring {
+  stroke: var(--surface);
+  stroke-width: 12;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.spark-end-dot {
+  stroke: var(--accent);
+  stroke-width: 8;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.spark-hover-dot {
+  stroke: var(--ink-soft);
+  stroke-width: 8;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.spark-tooltip {
+  position: absolute;
+  top: -6px;
+  transform: translate(-50%, -100%);
+  background: var(--ink);
+  color: white;
+  font-size: 11px;
+  padding: 3px 7px;
+  border-radius: 6px;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.stat-count {
+  font-size: 11px;
+  color: var(--ink-soft);
+  margin-top: 6px;
+}
 
 .file-sync-bar {
   display: flex;
