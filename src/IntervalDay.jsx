@@ -22,6 +22,20 @@ function fmtDate(iso) {
   return d.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" });
 }
 
+const QUOTES = {
+  workStart: ["Let's go!", "Here we go!", "Make it count!"],
+  work: ["Keep pushing!", "You've got this!", "Strong and steady!", "Stay on it!"],
+  workEnd: ["Nearly there!", "Finish strong!", "Almost done!", "Don't fade now!"],
+  lastRound: ["Last round!", "Empty the tank!"],
+  rest: ["Breathe.", "Shake it out.", "Good work — recover.", "Easy does it."],
+};
+
+function pickQuote(bank, previous) {
+  let i = Math.floor(Math.random() * bank.length);
+  if (bank.length > 1 && bank[i] === previous) i = (i + 1) % bank.length;
+  return bank[i];
+}
+
 export default function IntervalDay({ protocol, addEntry, lastFor }) {
   const { rounds, workSeconds, restSeconds, modalities } = protocol;
   const [phase, setPhase] = useState("work"); // work | rest
@@ -29,7 +43,26 @@ export default function IntervalDay({ protocol, addEntry, lastFor }) {
   const [remaining, setRemaining] = useState(workSeconds);
   const [running, setRunning] = useState(false);
   const [done, setDone] = useState(false);
+  const [quote, setQuote] = useState(null);
   const intervalRef = useRef(null);
+
+  // A motivational line at the start of each phase and every 30s after,
+  // matched to where you are: hype early, "nearly there" late, calm on rest.
+  useEffect(() => {
+    if (!running || done) return;
+    const total = phase === "work" ? workSeconds : restSeconds;
+    const elapsed = total - remaining;
+    if (remaining <= 10) return; // the pulsing clock takes over here
+    if (elapsed !== 2 && (elapsed <= 0 || elapsed % 30 !== 0)) return;
+
+    let bank;
+    if (phase === "rest") bank = QUOTES.rest;
+    else if (elapsed === 2) bank = round === rounds ? QUOTES.lastRound : QUOTES.workStart;
+    else if (remaining <= 45) bank = QUOTES.workEnd;
+    else bank = QUOTES.work;
+
+    setQuote((q) => ({ text: pickQuote(bank, q?.text), key: (q?.key ?? 0) + 1 }));
+  }, [remaining, running, done, phase, round, rounds, workSeconds, restSeconds]);
 
   useEffect(() => {
     if (!running) return;
@@ -66,6 +99,7 @@ export default function IntervalDay({ protocol, addEntry, lastFor }) {
     clearInterval(intervalRef.current);
     setRunning(false);
     setDone(false);
+    setQuote(null);
     setPhase("work");
     setRound(1);
     setRemaining(workSeconds);
@@ -115,7 +149,16 @@ export default function IntervalDay({ protocol, addEntry, lastFor }) {
             style={{ strokeDasharray: circumference, strokeDashoffset: offset }}
           />
         </svg>
-        <div className="timer-time">{done ? "Done" : `${mm}:${ss}`}</div>
+        <div
+          className={`timer-time ${running && !done && remaining <= 10 ? "timer-time-pulse" : ""}`}
+        >
+          {done ? "Done" : `${mm}:${ss}`}
+        </div>
+        {quote && running && !done && (
+          <div key={quote.key} className="interval-quote" aria-hidden="true">
+            {quote.text}
+          </div>
+        )}
       </div>
       <div className="timer-controls">
         <button className="btn btn-ghost" onClick={reset}>Reset</button>

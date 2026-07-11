@@ -226,16 +226,17 @@ button:focus-visible, input:focus-visible {
 }
 
 .log-input {
-  width: 52px;
-  padding: 7px 6px;
+  width: 66px;
+  padding: 10px 6px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  font-size: 13px;
+  /* 16px minimum — anything smaller makes mobile browsers zoom in on focus */
+  font-size: 16px;
   text-align: center;
   font-variant-numeric: tabular-nums;
 }
 
-.log-input-small { width: 44px; }
+.log-input-small { width: 56px; }
 
 .btn {
   border: none;
@@ -600,6 +601,67 @@ button:focus-visible, input:focus-visible {
 
 .timer-ring-rest { stroke: var(--rehab); }
 
+/* --- Interval clock: flying quotes + final-10s pulse --- */
+
+.interval-quote {
+  position: absolute;
+  top: 26%;
+  left: 50%;
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--accent);
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 2;
+  animation: quote-fly 3.5s ease-in-out forwards;
+}
+
+@keyframes quote-fly {
+  0%   { opacity: 0; transform: translate(-190%, -50%) scale(0.8); }
+  18%  { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+  28%  { transform: translate(-50%, -50%) scale(1); }
+  72%  { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  100% { opacity: 0; transform: translate(100%, -50%) scale(0.9); }
+}
+
+.timer-time-pulse {
+  color: var(--accent);
+  animation: time-pulse 1s ease-in-out infinite;
+}
+
+@keyframes time-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.14); }
+}
+
+/* --- Rest timer finish: go red, then fade back to the workout --- */
+
+.timer-overlay-finished {
+  animation: overlay-fadeout 5s ease forwards;
+}
+
+@keyframes overlay-fadeout {
+  0% { opacity: 1; }
+  30% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.timer-ring-finished {
+  stroke: #c73030;
+}
+
+.timer-card-finished .timer-ring-track { stroke: #f3d9d9; }
+
+.timer-time-finished {
+  color: #c73030;
+  animation: finished-flash 0.4s ease 3;
+}
+
+@keyframes finished-flash {
+  50% { opacity: 0.25; }
+}
+
 .interval-log {
   margin-top: 20px;
   display: flex;
@@ -615,10 +677,10 @@ button:focus-visible, input:focus-visible {
 
 .log-select {
   flex: 1;
-  padding: 8px 10px;
+  padding: 10px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  font-size: 13px;
+  font-size: 16px;
   background: var(--surface);
   color: var(--ink);
 }
@@ -641,4 +703,8 @@ button:focus-visible, input:focus-visible {
 
 @media (prefers-reduced-motion: reduce) {
   .timer-ring-progress { transition: none; }
+  .interval-quote { display: none; }
+  .timer-time-pulse,
+  .timer-time-finished,
+  .timer-overlay-finished { animation: none; }
 }

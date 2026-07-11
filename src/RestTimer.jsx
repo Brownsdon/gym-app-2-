@@ -22,6 +22,7 @@ export default function RestTimer({ open, onClose }) {
   const [duration, setDuration] = useState(90);
   const [remaining, setRemaining] = useState(90);
   const [running, setRunning] = useState(false);
+  const [finished, setFinished] = useState(false);
   const intervalRef = useRef(null);
 
   useEffect(() => {
@@ -31,6 +32,7 @@ export default function RestTimer({ open, onClose }) {
           if (r <= 1) {
             clearInterval(intervalRef.current);
             setRunning(false);
+            setFinished(true);
             beep();
             return 0;
           }
@@ -41,13 +43,32 @@ export default function RestTimer({ open, onClose }) {
     return () => clearInterval(intervalRef.current);
   }, [running]);
 
+  // When the countdown ends: flash red, fade out, and put the phone back on
+  // the workout screen without needing a touch.
+  useEffect(() => {
+    if (!finished || !open) return;
+    const t = setTimeout(() => {
+      setFinished(false);
+      setRemaining(duration);
+      onClose();
+    }, 5000);
+    return () => clearTimeout(t);
+  }, [finished, open, duration, onClose]);
+
+  // Reopening after a manual close mid-fade starts clean.
+  useEffect(() => {
+    if (open) setFinished(false);
+  }, [open]);
+
   function pick(sec) {
     setDuration(sec);
     setRemaining(sec);
     setRunning(false);
+    setFinished(false);
   }
 
   function toggle() {
+    setFinished(false);
     if (remaining === 0) {
       setRemaining(duration);
       setRunning(true);
@@ -59,6 +80,7 @@ export default function RestTimer({ open, onClose }) {
   function reset() {
     clearInterval(intervalRef.current);
     setRunning(false);
+    setFinished(false);
     setRemaining(duration);
   }
 
@@ -72,8 +94,11 @@ export default function RestTimer({ open, onClose }) {
   const offset = circumference * (1 - pct / 100);
 
   return (
-    <div className="timer-overlay" onClick={onClose}>
-      <div className="timer-card" onClick={(e) => e.stopPropagation()}>
+    <div className={`timer-overlay ${finished ? "timer-overlay-finished" : ""}`} onClick={onClose}>
+      <div
+        className={`timer-card ${finished ? "timer-card-finished" : ""}`}
+        onClick={(e) => e.stopPropagation()}
+      >
         <button className="timer-close" onClick={onClose} aria-label="Close rest timer">
           ×
         </button>
@@ -84,14 +109,16 @@ export default function RestTimer({ open, onClose }) {
               cx="60"
               cy="60"
               r={r}
-              className="timer-ring-progress"
+              className={`timer-ring-progress ${finished ? "timer-ring-finished" : ""}`}
               style={{
                 strokeDasharray: circumference,
-                strokeDashoffset: offset,
+                strokeDashoffset: finished ? 0 : offset,
               }}
             />
           </svg>
-          <div className="timer-time">{mm}:{ss}</div>
+          <div className={`timer-time ${finished ? "timer-time-finished" : ""}`}>
+            {finished ? "Go!" : `${mm}:${ss}`}
+          </div>
         </div>
         <div className="timer-presets">
           {REST_PRESETS.map((p) => (

@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { PROGRAM, TIERS, dayKeyForToday } from "./data.js";
 import { useLog } from "./useLog.js";
+import { useWakeLock } from "./useWakeLock.js";
 import RestTimer from "./RestTimer.jsx";
 import IntervalDay from "./IntervalDay.jsx";
 import ProgressView from "./ProgressView.jsx";
@@ -273,6 +274,7 @@ export default function App() {
     useLog();
   const [tab, setTab] = useState("workout");
   const [timerOpen, setTimerOpen] = useState(false);
+  useWakeLock();
 
   return (
     <div className="app">
