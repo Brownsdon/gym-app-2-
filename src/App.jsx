@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { PROGRAM, TIERS, dayKeyForToday } from "./data.js";
 import { useLog } from "./useLog.js";
 import { useWakeLock } from "./useWakeLock.js";
@@ -8,12 +8,15 @@ import ProgressView from "./ProgressView.jsx";
 
 const DAY_KEYS = ["mon", "tue", "thu", "fri"];
 
+const FLYBY_ANIMALS = ["🐐", "🦖", "🦅", "🐎", "🦘", "🐆", "🦍", "🐢"];
+const PR_MESSAGES = ["Nice one!", "New best!", "Stronger!", "Level up!"];
+
 function fmtDate(iso) {
   const d = new Date(iso);
   return d.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" });
 }
 
-function ExerciseRow({ exercise, tier, addEntry, lastFor }) {
+function ExerciseRow({ exercise, tier, addEntry, lastFor, onCelebrate }) {
   const variants = useMemo(() => [exercise, ...(exercise.alternates || [])], [exercise]);
   const [variantIndex, setVariantIndex] = useState(0);
   const active = variants[variantIndex];
@@ -22,6 +25,8 @@ function ExerciseRow({ exercise, tier, addEntry, lastFor }) {
   const [weight, setWeight] = useState("");
   const [reps, setReps] = useState("");
   const [logged, setLogged] = useState(false);
+  const [pr, setPr] = useState(null);
+  const prTimeout = useRef(null);
   const last = lastFor(active.name);
   // Prefill from the previous session so a repeat set is a single tap on Log.
   const lastWeight = !isRepsOnly && last && last.weight != null ? last.weight : null;
@@ -33,11 +38,34 @@ function ExerciseRow({ exercise, tier, addEntry, lastFor }) {
     setReps("");
   }, [variantIndex]);
 
+  useEffect(() => () => clearTimeout(prTimeout.current), []);
+
+  // Beat the previous session — heavier, or same weight for more reps — and
+  // a green "Nice one!" pops up (with the occasional flying animal).
+  function checkForPr(w, r) {
+    if (!last) return;
+    let delta = null;
+    if (w != null && last.weight != null) {
+      if (w > last.weight) delta = `+${w - last.weight} lb`;
+      else if (w === last.weight && r != null && last.reps != null && r > last.reps)
+        delta = `+${r - last.reps} reps`;
+    } else if (w == null && last.weight == null && r != null && last.reps != null && r > last.reps) {
+      delta = `+${r - last.reps} reps`;
+    }
+    if (!delta) return;
+    const text = PR_MESSAGES[Math.floor(Math.random() * PR_MESSAGES.length)];
+    setPr({ text: `${text} ${delta}`, key: Date.now() });
+    clearTimeout(prTimeout.current);
+    prTimeout.current = setTimeout(() => setPr(null), 2000);
+    if (Math.random() < 0.5) onCelebrate();
+  }
+
   function submit(e) {
     e.preventDefault();
     const w = isRepsOnly ? null : weight ? Number(weight) : lastWeight;
     const r = reps ? Number(reps) : lastReps;
     if (w == null && r == null) return;
+    checkForPr(w, r);
     addEntry({
       exerciseName: active.name,
       weight: w,
@@ -53,10 +81,14 @@ function ExerciseRow({ exercise, tier, addEntry, lastFor }) {
     addEntry({ exerciseName: active.name, done: true });
     setLogged(true);
     setTimeout(() => setLogged(false), 1400);
+    if (Math.random() < 0.25) onCelebrate();
   }
 
   return (
-    <div className="exercise-row" style={tier ? { borderLeftColor: TIERS[tier].color } : undefined}>
+    <div
+      className={`exercise-row ${pr ? "exercise-row-pr" : ""}`}
+      style={tier ? { borderLeftColor: TIERS[tier].color } : undefined}
+    >
       <div className="exercise-info">
         {variants.length > 1 && (
           <div className="variant-picker">
@@ -94,6 +126,11 @@ function ExerciseRow({ exercise, tier, addEntry, lastFor }) {
         </div>
       ) : (
         <form className="exercise-log" onSubmit={submit}>
+          {pr && (
+            <div key={pr.key} className="pr-pop" aria-hidden="true">
+              {pr.text}
+            </div>
+          )}
           {!isRepsOnly && (
             <input
               type="number"
@@ -121,7 +158,7 @@ function ExerciseRow({ exercise, tier, addEntry, lastFor }) {
   );
 }
 
-function WorkoutView({ addEntry, lastFor, onOpenTimer }) {
+function WorkoutView({ addEntry, lastFor, onOpenTimer, onCelebrate }) {
   const today = dayKeyForToday();
   const [dayKey, setDayKey] = useState(today || "tue");
   const day = PROGRAM[dayKey];
@@ -170,6 +207,7 @@ function WorkoutView({ addEntry, lastFor, onOpenTimer }) {
                   tier={block.tier}
                   addEntry={addEntry}
                   lastFor={lastFor}
+                  onCelebrate={onCelebrate}
                 />
               ))}
             </section>
@@ -274,7 +312,21 @@ export default function App() {
     useLog();
   const [tab, setTab] = useState("workout");
   const [timerOpen, setTimerOpen] = useState(false);
+  const [flyby, setFlyby] = useState(null);
+  const flybyTimeout = useRef(null);
   useWakeLock();
+
+  useEffect(() => () => clearTimeout(flybyTimeout.current), []);
+
+  const celebrate = useCallback(() => {
+    setFlyby({
+      emoji: FLYBY_ANIMALS[Math.floor(Math.random() * FLYBY_ANIMALS.length)],
+      top: 15 + Math.random() * 50,
+      key: Date.now(),
+    });
+    clearTimeout(flybyTimeout.current);
+    flybyTimeout.current = setTimeout(() => setFlyby(null), 2200);
+  }, []);
 
   return (
     <div className="app">
@@ -307,7 +359,12 @@ export default function App() {
 
       <main>
         {tab === "workout" ? (
-          <WorkoutView addEntry={addEntry} lastFor={lastFor} onOpenTimer={() => setTimerOpen(true)} />
+          <WorkoutView
+            addEntry={addEntry}
+            lastFor={lastFor}
+            onOpenTimer={() => setTimerOpen(true)}
+            onCelebrate={celebrate}
+          />
         ) : tab === "progress" ? (
           <ProgressView entries={entries} />
         ) : (
@@ -323,6 +380,12 @@ export default function App() {
       </main>
 
       <RestTimer open={timerOpen} onClose={() => setTimerOpen(false)} />
+
+      {flyby && (
+        <div key={flyby.key} className="flyby" style={{ top: `${flyby.top}%` }} aria-hidden="true">
+          {flyby.emoji}
+        </div>
+      )}
     </div>
   );
 }

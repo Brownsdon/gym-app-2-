@@ -223,6 +223,60 @@ button:focus-visible, input:focus-visible {
   display: flex;
   gap: 6px;
   flex-shrink: 0;
+  position: relative;
+}
+
+/* --- Celebrations: PR pop + flying animal --- */
+
+.pr-pop {
+  position: absolute;
+  right: 0;
+  top: -36px;
+  background: var(--rehab);
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px 10px;
+  border-radius: 14px;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 5;
+  animation: pr-pop 2s ease forwards;
+}
+
+@keyframes pr-pop {
+  0%   { opacity: 0; transform: translateY(8px) scale(0.6); }
+  15%  { opacity: 1; transform: translateY(0) scale(1.12); }
+  25%  { transform: scale(1); }
+  75%  { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-14px); }
+}
+
+.exercise-row-pr {
+  animation: row-green-flash 1.4s ease;
+}
+
+@keyframes row-green-flash {
+  0%   { background: var(--surface); }
+  25%  { background: #dcece5; }
+  100% { background: var(--surface); }
+}
+
+.flyby {
+  position: fixed;
+  left: -80px;
+  z-index: 90;
+  font-size: 46px;
+  line-height: 1;
+  pointer-events: none;
+  animation: flyby-cross 1.9s ease-in-out forwards;
+}
+
+@keyframes flyby-cross {
+  0%   { transform: translateX(0) translateY(0) rotate(-8deg); }
+  30%  { transform: translateX(35vw) translateY(-26px) rotate(6deg); }
+  60%  { transform: translateX(68vw) translateY(8px) rotate(-4deg); }
+  100% { transform: translateX(calc(100vw + 170px)) translateY(-18px) rotate(8deg); }
 }
 
 .log-input {
@@ -704,7 +758,10 @@ button:focus-visible, input:focus-visible {
 @media (prefers-reduced-motion: reduce) {
   .timer-ring-progress { transition: none; }
   .interval-quote { display: none; }
+  .flyby { display: none; }
   .timer-time-pulse,
   .timer-time-finished,
-  .timer-overlay-finished { animation: none; }
+  .timer-overlay-finished,
+  .pr-pop,
+  .exercise-row-pr { animation: none; }
 }
