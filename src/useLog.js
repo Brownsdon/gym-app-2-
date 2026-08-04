@@ -108,6 +108,25 @@ export function useLog() {
     setEntries((prev) => prev.filter((e) => e.id !== id));
   }, []);
 
+  // Merge a backup in: only adds entries whose id isn't already present,
+  // so importing can never lose or overwrite what's on the device.
+  const importEntries = useCallback(
+    (incoming) => {
+      const seen = new Set(entries.map((e) => e.id));
+      const fresh = incoming.filter((e) => !seen.has(e.id));
+      if (fresh.length > 0) {
+        setEntries((prev) => {
+          const present = new Set(prev.map((e) => e.id));
+          const merged = [...prev, ...fresh.filter((e) => !present.has(e.id))];
+          merged.sort((a, b) => new Date(b.date) - new Date(a.date));
+          return merged;
+        });
+      }
+      return fresh.length;
+    },
+    [entries]
+  );
+
   const lastFor = useCallback(
     (exerciseName) => entries.find((e) => e.exerciseName === exerciseName),
     [entries]
@@ -117,6 +136,7 @@ export function useLog() {
     entries,
     addEntry,
     removeEntry,
+    importEntries,
     lastFor,
     fileState,
     connectFile,

@@ -5,6 +5,7 @@ import { useWakeLock } from "./useWakeLock.js";
 import RestTimer from "./RestTimer.jsx";
 import IntervalDay from "./IntervalDay.jsx";
 import ProgressView from "./ProgressView.jsx";
+import { exportEntries, parseBackup } from "./exportLog.js";
 
 const DAY_KEYS = ["mon", "tue", "thu", "fri"];
 
@@ -222,6 +223,55 @@ function WorkoutView({ addEntry, lastFor, onOpenTimer, onCelebrate }) {
   );
 }
 
+function BackupBar({ entries, importEntries }) {
+  const fileRef = useRef(null);
+  const [status, setStatus] = useState(null);
+
+  async function onExport() {
+    if (entries.length === 0) {
+      setStatus("Nothing to export yet.");
+      return;
+    }
+    const result = await exportEntries(entries);
+    if (result === "shared") setStatus(`Shared a backup of ${entries.length} entries.`);
+    else if (result === "downloaded") setStatus(`Downloaded a backup of ${entries.length} entries.`);
+  }
+
+  async function onImportFile(e) {
+    const file = e.target.files && e.target.files[0];
+    e.target.value = "";
+    if (!file) return;
+    try {
+      const incoming = parseBackup(await file.text());
+      const added = importEntries(incoming);
+      setStatus(
+        added > 0
+          ? `Imported ${added} new ${added === 1 ? "entry" : "entries"}.`
+          : "No new entries — everything in that backup is already here."
+      );
+    } catch {
+      setStatus("Couldn't read that file — is it a gym-log backup (.json)?");
+    }
+  }
+
+  return (
+    <div className="backup-bar">
+      <div className="backup-actions">
+        <button className="btn btn-sm" onClick={onExport}>Export backup</button>
+        <button className="btn btn-ghost" onClick={() => fileRef.current?.click()}>Import</button>
+        <input
+          ref={fileRef}
+          type="file"
+          accept=".json,application/json"
+          onChange={onImportFile}
+          hidden
+        />
+      </div>
+      {status && <div className="backup-status">{status}</div>}
+    </div>
+  );
+}
+
 function FileSyncBar({ fileState, connectFile, reconnectFile, disconnectFile }) {
   if (!fileState.supported) return null;
 
@@ -250,7 +300,15 @@ function FileSyncBar({ fileState, connectFile, reconnectFile, disconnectFile }) 
   );
 }
 
-function HistoryView({ entries, removeEntry, fileState, connectFile, reconnectFile, disconnectFile }) {
+function HistoryView({
+  entries,
+  removeEntry,
+  importEntries,
+  fileState,
+  connectFile,
+  reconnectFile,
+  disconnectFile,
+}) {
   const grouped = useMemo(() => {
     const map = new Map();
     for (const e of entries) {
@@ -261,28 +319,18 @@ function HistoryView({ entries, removeEntry, fileState, connectFile, reconnectFi
     return Array.from(map.entries());
   }, [entries]);
 
-  if (entries.length === 0) {
-    return (
-      <>
-        <FileSyncBar
-          fileState={fileState}
-          connectFile={connectFile}
-          reconnectFile={reconnectFile}
-          disconnectFile={disconnectFile}
-        />
-        <p className="empty-state">No sets logged yet. Log a weight and it'll show up here.</p>
-      </>
-    );
-  }
-
   return (
     <div className="history">
+      <BackupBar entries={entries} importEntries={importEntries} />
       <FileSyncBar
         fileState={fileState}
         connectFile={connectFile}
         reconnectFile={reconnectFile}
         disconnectFile={disconnectFile}
       />
+      {entries.length === 0 && (
+        <p className="empty-state">No sets logged yet. Log a weight and it'll show up here.</p>
+      )}
       {grouped.map(([date, items]) => (
         <div key={date} className="history-day">
           <h3 className="history-date">{date}</h3>
@@ -308,8 +356,17 @@ function HistoryView({ entries, removeEntry, fileState, connectFile, reconnectFi
 }
 
 export default function App() {
-  const { entries, addEntry, removeEntry, lastFor, fileState, connectFile, reconnectFile, disconnectFile } =
-    useLog();
+  const {
+    entries,
+    addEntry,
+    removeEntry,
+    importEntries,
+    lastFor,
+    fileState,
+    connectFile,
+    reconnectFile,
+    disconnectFile,
+  } = useLog();
   const [tab, setTab] = useState("workout");
   const [timerOpen, setTimerOpen] = useState(false);
   const [flyby, setFlyby] = useState(null);
@@ -371,6 +428,7 @@ export default function App() {
           <HistoryView
             entries={entries}
             removeEntry={removeEntry}
+            importEntries={importEntries}
             fileState={fileState}
             connectFile={connectFile}
             reconnectFile={reconnectFile}
