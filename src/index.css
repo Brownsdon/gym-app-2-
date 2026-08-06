@@ -760,6 +760,16 @@ button:focus-visible, input:focus-visible {
 
 .interval-modality-input { flex: 1; width: auto; }
 
+/* Wide enough that the "RPE" placeholder isn't clipped */
+.interval-rpe-input { width: 74px; }
+
+.interval-hint {
+  font-size: 12px;
+  color: var(--ink-soft);
+  line-height: 1.45;
+  margin-top: -2px;
+}
+
 .interval-notes { width: 100%; text-align: left; }
 
 .interval-log-btn { width: 100%; }

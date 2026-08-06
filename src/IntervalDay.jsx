@@ -183,15 +183,19 @@ export default function IntervalDay({ protocol, addEntry, lastFor }) {
             />
           )}
           <input
-            className="log-input log-input-small"
+            className="log-input interval-rpe-input"
             type="number"
             inputMode="numeric"
             placeholder="RPE"
+            aria-label="Rate of perceived exertion, 1 to 10"
             min="1"
             max="10"
             value={rpe}
             onChange={(e) => setRpe(e.target.value)}
           />
+        </div>
+        <div className="interval-hint">
+          RPE = how hard it felt, 1–10. 6–7 = comfortably hard, 8–9 = properly hard, 10 = all out.
         </div>
         <input
           className="log-input interval-notes"
