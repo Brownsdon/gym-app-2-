@@ -16,15 +16,21 @@ function fmtShort(iso) {
 // last 12 points, single unit so a line never mixes lb with reps).
 function buildSeries(entries) {
   const byName = new Map();
+  const push = (name, point) => {
+    if (!byName.has(name)) byName.set(name, []);
+    byName.get(name).push(point);
+  };
   for (const e of entries) {
     let value = null;
     let unit = null;
     if (e.weight != null) [value, unit] = [e.weight, "lb"];
+    else if (e.seconds != null) [value, unit] = [e.seconds, "s"];
     else if (e.reps != null) [value, unit] = [e.reps, "reps"];
     else if (e.rpe != null) [value, unit] = [e.rpe, "RPE"];
-    if (value == null) continue;
-    if (!byName.has(e.exerciseName)) byName.set(e.exerciseName, []);
-    byName.get(e.exerciseName).push({ date: e.date, value, unit });
+    if (value != null) push(e.exerciseName, { date: e.date, value, unit });
+    // On the graded drills the level is the axis being progressed, so it
+    // gets its own tile rather than hiding behind reps.
+    if (e.level != null) push(`${e.exerciseName} — level`, { date: e.date, value: e.level, unit: "level" });
   }
 
   const series = [];

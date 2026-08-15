@@ -17,36 +17,62 @@ function fmtDate(iso) {
   return d.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" });
 }
 
+// One place that knows how a logged entry reads, whatever kind it is.
+export function fmtEntryValue(e) {
+  if (e.modality) return `${e.modality}${e.rpe ? ` · RPE ${e.rpe}` : ""}`;
+  if (e.done) return "✓ Done";
+  const parts = [];
+  if (e.weight != null) parts.push(`${e.weight} lb`);
+  if (e.seconds != null) parts.push(`${e.seconds}s`);
+  if (e.reps != null) parts.push(`${e.reps} reps`);
+  let text = parts.join(" × ");
+  if (e.level != null) text += `${text ? " · " : ""}level ${e.level}`;
+  return text;
+}
+
 function ExerciseRow({ exercise, tier, addEntry, lastFor, onCelebrate }) {
   const variants = useMemo(() => [exercise, ...(exercise.alternates || [])], [exercise]);
   const [variantIndex, setVariantIndex] = useState(0);
   const active = variants[variantIndex];
   const isCheck = active.logType === "check";
   const isRepsOnly = active.logType === "reps";
+  const isHold = active.logType === "hold";
+  const isGraded = Boolean(active.graded);
   const [weight, setWeight] = useState("");
   const [reps, setReps] = useState("");
+  const [seconds, setSeconds] = useState("");
+  const [level, setLevel] = useState("");
   const [logged, setLogged] = useState(false);
   const [pr, setPr] = useState(null);
   const prTimeout = useRef(null);
   const last = lastFor(active.name);
   // Prefill from the previous session so a repeat set is a single tap on Log.
-  const lastWeight = !isRepsOnly && last && last.weight != null ? last.weight : null;
-  const lastReps = last && last.reps != null ? last.reps : null;
+  const lastWeight = !isRepsOnly && !isHold && last && last.weight != null ? last.weight : null;
+  const lastReps = !isHold && last && last.reps != null ? last.reps : null;
+  const lastSeconds = isHold && last && last.seconds != null ? last.seconds : null;
+  const lastLevel = isGraded && last && last.level != null ? last.level : null;
 
   // Each variant is a different exercise — don't carry typed values across.
   useEffect(() => {
     setWeight("");
     setReps("");
+    setSeconds("");
+    setLevel("");
   }, [variantIndex]);
 
   useEffect(() => () => clearTimeout(prTimeout.current), []);
 
-  // Beat the previous session — heavier, or same weight for more reps — and
-  // a green "Nice one!" pops up (with the occasional flying animal).
-  function checkForPr(w, r) {
+  // Beat the previous session and a green "Nice one!" pops up (with the
+  // occasional flying animal). Progressing the grade counts: on the graded
+  // drills that axis is the point, not the load.
+  function checkForPr({ w, r, s, lv }) {
     if (!last) return;
     let delta = null;
-    if (w != null && last.weight != null) {
+    if (isGraded && lv != null && last.level != null && lv > last.level) {
+      delta = `+${lv - last.level} level`;
+    } else if (isHold) {
+      if (s != null && last.seconds != null && s > last.seconds) delta = `+${s - last.seconds}s`;
+    } else if (w != null && last.weight != null) {
       if (w > last.weight) delta = `+${w - last.weight} lb`;
       else if (w === last.weight && r != null && last.reps != null && r > last.reps)
         delta = `+${r - last.reps} reps`;
@@ -63,19 +89,25 @@ function ExerciseRow({ exercise, tier, addEntry, lastFor, onCelebrate }) {
 
   function submit(e) {
     e.preventDefault();
-    const w = isRepsOnly ? null : weight ? Number(weight) : lastWeight;
-    const r = reps ? Number(reps) : lastReps;
-    if (w == null && r == null) return;
-    checkForPr(w, r);
+    const w = isRepsOnly || isHold ? null : weight ? Number(weight) : lastWeight;
+    const r = isHold ? null : reps ? Number(reps) : lastReps;
+    const s = isHold ? (seconds ? Number(seconds) : lastSeconds) : null;
+    const lv = isGraded ? (level ? Number(level) : lastLevel) : null;
+    if (w == null && r == null && s == null) return;
+    checkForPr({ w, r, s, lv });
     addEntry({
       exerciseName: active.name,
       weight: w,
       reps: r,
+      ...(s != null ? { seconds: s } : {}),
+      ...(lv != null ? { level: lv } : {}),
     });
     setLogged(true);
     setTimeout(() => setLogged(false), 1400);
     setWeight("");
     setReps("");
+    setSeconds("");
+    setLevel("");
   }
 
   function markDone() {
@@ -111,7 +143,7 @@ function ExerciseRow({ exercise, tier, addEntry, lastFor, onCelebrate }) {
           <div className="exercise-last">
             {isCheck
               ? `Done · ${fmtDate(last.date)}`
-              : `Last: ${last.weight ? `${last.weight} lb` : ""}${last.weight && last.reps ? " × " : ""}${last.reps ? `${last.reps} reps` : ""} · ${fmtDate(last.date)}`}
+              : `Last: ${fmtEntryValue(last)} · ${fmtDate(last.date)}`}
           </div>
         )}
       </div>
@@ -132,24 +164,52 @@ function ExerciseRow({ exercise, tier, addEntry, lastFor, onCelebrate }) {
               {pr.text}
             </div>
           )}
-          {!isRepsOnly && (
+          {!isRepsOnly && !isHold && (
             <input
               type="number"
               inputMode="decimal"
               placeholder={lastWeight != null ? String(lastWeight) : "lb"}
+              aria-label="Weight in pounds"
               value={weight}
               onChange={(e) => setWeight(e.target.value)}
               className="log-input"
             />
           )}
-          <input
-            type="number"
-            inputMode="numeric"
-            placeholder={lastReps != null ? String(lastReps) : "reps"}
-            value={reps}
-            onChange={(e) => setReps(e.target.value)}
-            className={isRepsOnly ? "log-input" : "log-input log-input-small"}
-          />
+          {isHold ? (
+            <input
+              type="number"
+              inputMode="numeric"
+              placeholder={lastSeconds != null ? String(lastSeconds) : "sec"}
+              aria-label="Hold time in seconds"
+              value={seconds}
+              onChange={(e) => setSeconds(e.target.value)}
+              className={isGraded ? "log-input log-input-small" : "log-input"}
+            />
+          ) : (
+            <input
+              type="number"
+              inputMode="numeric"
+              placeholder={lastReps != null ? String(lastReps) : "reps"}
+              aria-label="Reps"
+              value={reps}
+              onChange={(e) => setReps(e.target.value)}
+              className={isRepsOnly && !isGraded ? "log-input" : "log-input log-input-small"}
+            />
+          )}
+          {isGraded && (
+            <input
+              type="number"
+              inputMode="numeric"
+              min="1"
+              max="5"
+              placeholder={lastLevel != null ? String(lastLevel) : "lvl"}
+              aria-label={`Level — ${active.gradeHint || "grade"}`}
+              title={active.gradeHint || "Level"}
+              value={level}
+              onChange={(e) => setLevel(e.target.value)}
+              className="log-input log-input-small"
+            />
+          )}
           <button type="submit" className={`btn btn-log ${logged ? "btn-log-done" : ""}`}>
             {logged ? "✓" : "Log"}
           </button>
@@ -201,6 +261,7 @@ function WorkoutView({ addEntry, lastFor, onOpenTimer, onCelebrate }) {
                   </span>
                 )}
               </div>
+              {block.note && <p className="block-note">{block.note}</p>}
               {block.exercises.map((ex) => (
                 <ExerciseRow
                   key={ex.name}
@@ -337,13 +398,7 @@ function HistoryView({
           {items.map((e) => (
             <div key={e.id} className="history-row">
               <span className="history-name">{e.exerciseName}</span>
-              <span className="history-value">
-                {e.modality
-                  ? `${e.modality}${e.rpe ? ` · RPE ${e.rpe}` : ""}`
-                  : e.done
-                  ? "✓ Done"
-                  : `${e.weight ? `${e.weight} lb` : ""}${e.weight && e.reps ? " × " : ""}${e.reps ? `${e.reps} reps` : ""}`}
-              </span>
+              <span className="history-value">{fmtEntryValue(e)}</span>
               <button className="history-remove" onClick={() => removeEntry(e.id)} aria-label="Delete entry">
                 ×
               </button>
