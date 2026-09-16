@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
+import { isCheckin, localDayKey, todayKey } from "./CheckIn.jsx";
 import {
   isFileSyncSupported,
   getStoredHandle,
@@ -108,6 +109,20 @@ export function useLog() {
     setEntries((prev) => prev.filter((e) => e.id !== id));
   }, []);
 
+  // One check-in per day — saving again replaces today's rather than stacking.
+  const saveCheckin = useCallback((values) => {
+    setEntries((prev) => {
+      const key = todayKey();
+      const rest = prev.filter((e) => !(isCheckin(e) && localDayKey(e.date) === key));
+      const next = [
+        { id: crypto.randomUUID(), date: new Date().toISOString(), kind: "checkin", ...values },
+        ...rest,
+      ];
+      next.sort((a, b) => new Date(b.date) - new Date(a.date));
+      return next;
+    });
+  }, []);
+
   // Merge a backup in: only adds entries whose id isn't already present,
   // so importing can never lose or overwrite what's on the device.
   const importEntries = useCallback(
@@ -128,7 +143,7 @@ export function useLog() {
   );
 
   const lastFor = useCallback(
-    (exerciseName) => entries.find((e) => e.exerciseName === exerciseName),
+    (exerciseName) => entries.find((e) => !isCheckin(e) && e.exerciseName === exerciseName),
     [entries]
   );
 
@@ -137,6 +152,7 @@ export function useLog() {
     addEntry,
     removeEntry,
     importEntries,
+    saveCheckin,
     lastFor,
     fileState,
     connectFile,

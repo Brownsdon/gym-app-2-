@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { AREAS, isCheckin } from "./CheckIn.jsx";
 
 // Sparkline geometry: fixed viewBox scaled non-uniformly to fill the tile.
 // Strokes use non-scaling-stroke so line weight stays constant; dots are
@@ -21,6 +22,13 @@ function buildSeries(entries) {
     byName.get(name).push(point);
   };
   for (const e of entries) {
+    // Symptom check-ins get one tile per area, tracked separately from lifts.
+    if (isCheckin(e)) {
+      for (const a of AREAS) {
+        if (e[a.key] != null) push(`${a.label} symptoms`, { date: e.date, value: e[a.key], unit: "/10" });
+      }
+      continue;
+    }
     let value = null;
     let unit = null;
     if (e.weight != null) [value, unit] = [e.weight, "lb"];
@@ -38,7 +46,8 @@ function buildSeries(entries) {
     pts.reverse();
     const unit = pts[pts.length - 1].unit;
     const points = pts.filter((p) => p.unit === unit).slice(-12);
-    series.push({ name, unit, points });
+    // On a symptom scale a falling line is the good news, not a regression.
+    series.push({ name, unit, points, lowerIsBetter: unit === "/10" });
   }
   series.sort(
     (a, b) =>
@@ -113,13 +122,15 @@ function Sparkline({ points, unit }) {
 }
 
 function StatTile({ series }) {
-  const { name, unit, points } = series;
+  const { name, unit, points, lowerIsBetter } = series;
   const latest = points[points.length - 1];
   const first = points[0];
   const delta = latest.value - first.value;
   // More weight or reps is progress; a higher RPE isn't, so keep it neutral.
+  // On symptom scales the direction flips — less is better.
+  const improving = lowerIsBetter ? delta < 0 : delta > 0;
   const deltaClass =
-    unit === "RPE" || delta === 0 ? "stat-delta-flat" : delta > 0 ? "stat-delta-up" : "stat-delta-down";
+    unit === "RPE" || delta === 0 ? "stat-delta-flat" : improving ? "stat-delta-up" : "stat-delta-down";
 
   return (
     <div className="stat-tile">
@@ -138,7 +149,8 @@ function StatTile({ series }) {
       )}
       <Sparkline points={points} unit={unit} />
       <div className="stat-count">
-        {points.length} session{points.length === 1 ? "" : "s"}
+        {points.length} {lowerIsBetter ? "check-in" : "session"}
+        {points.length === 1 ? "" : "s"}
       </div>
     </div>
   );

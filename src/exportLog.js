@@ -33,6 +33,11 @@ export function parseBackup(text) {
   const parsed = JSON.parse(text);
   if (!Array.isArray(parsed)) throw new Error("not a backup array");
   return parsed.filter(
-    (e) => e && typeof e === "object" && e.id && e.date && e.exerciseName
+    (e) =>
+      e &&
+      typeof e === "object" &&
+      e.id &&
+      e.date &&
+      (e.exerciseName || e.kind === "checkin")
   );
 }

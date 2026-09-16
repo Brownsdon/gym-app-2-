@@ -801,3 +801,105 @@ button:focus-visible, input:focus-visible {
   .pr-pop,
   .exercise-row-pr { animation: none; }
 }
+
+/* --- Daily symptom check-in --- */
+
+.checkin-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  margin-bottom: 14px;
+}
+
+.checkin-open {
+  display: block;
+}
+
+.checkin-prompt {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.checkin-hint {
+  display: block;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--ink-soft);
+  margin-top: 2px;
+}
+
+.checkin-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.checkin-label {
+  font-size: 13px;
+  font-weight: 600;
+  width: 42px;
+  flex-shrink: 0;
+}
+
+.checkin-slider {
+  flex: 1;
+  accent-color: var(--accent);
+  height: 28px;
+}
+
+.checkin-value {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  width: 26px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.checkin-value-zero { color: var(--ink-soft); }
+
+.checkin-note {
+  width: 100%;
+  text-align: left;
+  margin-top: 12px;
+  font-size: 14px;
+}
+
+.checkin-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.checkin-summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 13px;
+}
+
+.checkin-summary-label {
+  font-weight: 600;
+}
+
+.checkin-chip {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 3px 10px;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.history-row-checkin {
+  border-left: 3px solid var(--rehab);
+}

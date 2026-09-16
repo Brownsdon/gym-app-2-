@@ -6,6 +6,7 @@ import RestTimer from "./RestTimer.jsx";
 import IntervalDay from "./IntervalDay.jsx";
 import ProgressView from "./ProgressView.jsx";
 import { exportEntries, parseBackup } from "./exportLog.js";
+import CheckIn, { AREAS, isCheckin, localDayKey, todayKey } from "./CheckIn.jsx";
 
 const DAY_KEYS = ["mon", "tue", "thu", "fri"];
 
@@ -19,6 +20,10 @@ function fmtDate(iso) {
 
 // One place that knows how a logged entry reads, whatever kind it is.
 export function fmtEntryValue(e) {
+  if (isCheckin(e)) {
+    const parts = AREAS.map((a) => `${a.label} ${e[a.key]}`);
+    return e.note ? `${parts.join(" · ")} — ${e.note}` : parts.join(" · ");
+  }
   if (e.modality) return `${e.modality}${e.rpe ? ` · RPE ${e.rpe}` : ""}`;
   if (e.done) return "✓ Done";
   const parts = [];
@@ -219,13 +224,15 @@ function ExerciseRow({ exercise, tier, addEntry, lastFor, onCelebrate }) {
   );
 }
 
-function WorkoutView({ addEntry, lastFor, onOpenTimer, onCelebrate }) {
+function WorkoutView({ addEntry, lastFor, onOpenTimer, onCelebrate, checkInProps }) {
   const today = dayKeyForToday();
   const [dayKey, setDayKey] = useState(today || "tue");
   const day = PROGRAM[dayKey];
 
   return (
     <div>
+      <CheckIn {...checkInProps} />
+
       <div className="day-tabs">
         {DAY_KEYS.map((k) => (
           <button
@@ -396,8 +403,8 @@ function HistoryView({
         <div key={date} className="history-day">
           <h3 className="history-date">{date}</h3>
           {items.map((e) => (
-            <div key={e.id} className="history-row">
-              <span className="history-name">{e.exerciseName}</span>
+            <div key={e.id} className={`history-row ${isCheckin(e) ? "history-row-checkin" : ""}`}>
+              <span className="history-name">{isCheckin(e) ? "Check-in" : e.exerciseName}</span>
               <span className="history-value">{fmtEntryValue(e)}</span>
               <button className="history-remove" onClick={() => removeEntry(e.id)} aria-label="Delete entry">
                 ×
@@ -416,6 +423,7 @@ export default function App() {
     addEntry,
     removeEntry,
     importEntries,
+    saveCheckin,
     lastFor,
     fileState,
     connectFile,
@@ -424,6 +432,15 @@ export default function App() {
   } = useLog();
   const [tab, setTab] = useState("workout");
   const [timerOpen, setTimerOpen] = useState(false);
+  const checkIns = useMemo(() => entries.filter(isCheckin), [entries]);
+  const todayEntry = useMemo(
+    () => checkIns.find((e) => localDayKey(e.date) === todayKey()) || null,
+    [checkIns]
+  );
+  const yesterdayEntry = useMemo(
+    () => checkIns.find((e) => localDayKey(e.date) !== todayKey()) || null,
+    [checkIns]
+  );
   const [flyby, setFlyby] = useState(null);
   const flybyTimeout = useRef(null);
   useWakeLock();
@@ -476,6 +493,7 @@ export default function App() {
             lastFor={lastFor}
             onOpenTimer={() => setTimerOpen(true)}
             onCelebrate={celebrate}
+            checkInProps={{ todayEntry, yesterdayEntry, saveCheckin }}
           />
         ) : tab === "progress" ? (
           <ProgressView entries={entries} />
