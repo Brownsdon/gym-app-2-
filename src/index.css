@@ -903,3 +903,91 @@ button:focus-visible, input:focus-visible {
 .history-row-checkin {
   border-left: 3px solid var(--rehab);
 }
+
+/* --- Today-only session note --- */
+
+.session-note {
+  background: #fdf6f3;
+  border: 1px solid #e8c9bd;
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  margin-bottom: 16px;
+}
+
+.session-note-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.session-note-eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.session-note-headline {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+.session-note-why {
+  font-size: 13px;
+  color: var(--ink-soft);
+  line-height: 1.5;
+  margin: 8px 0 0;
+}
+
+.session-note-rules {
+  margin: 10px 0 0;
+  padding-left: 18px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.session-note-rules li { margin-bottom: 4px; }
+
+.session-note-foot {
+  font-size: 11px;
+  color: var(--ink-soft);
+  margin-top: 10px;
+  font-style: italic;
+}
+
+/* --- Per-exercise adjustment badges --- */
+
+.exercise-row-adjusted { background: #fdfaf8; }
+.exercise-row-skip { opacity: 0.72; }
+
+.row-adjust {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px;
+  margin-top: 5px;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.row-adjust-tag {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: white;
+  padding: 2px 7px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.row-adjust-detail { color: var(--ink); }
+
+.row-adjust-ease .row-adjust-tag { background: var(--accent); }
+.row-adjust-swap .row-adjust-tag { background: var(--compound); }
+.row-adjust-skip .row-adjust-tag { background: var(--ink-soft); }
+.row-adjust-go   .row-adjust-tag { background: var(--rehab); }

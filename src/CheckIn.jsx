@@ -1,4 +1,7 @@
 import { useState, useEffect } from "react";
+import { localDayKey, todayKey } from "./data.js";
+
+export { localDayKey, todayKey };
 
 // Daily symptom check-in. Stored in the same log array as exercise entries
 // (kind: "checkin") so it rides along with backup, import and file sync for
@@ -13,15 +16,6 @@ const SCALE_HINT = "0 = fine · 10 = worst it gets";
 
 export function isCheckin(e) {
   return e && e.kind === "checkin";
-}
-
-export function localDayKey(iso) {
-  const d = new Date(iso);
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-}
-
-export function todayKey() {
-  return localDayKey(new Date().toISOString());
 }
 
 function Slider({ area, value, onChange }) {

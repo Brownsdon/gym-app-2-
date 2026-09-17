@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useRef, useCallback } from "react";
-import { PROGRAM, TIERS, dayKeyForToday } from "./data.js";
+import { PROGRAM, TIERS, dayKeyForToday, sessionNoteForToday } from "./data.js";
 import { useLog } from "./useLog.js";
 import { useWakeLock } from "./useWakeLock.js";
 import RestTimer from "./RestTimer.jsx";
@@ -35,7 +35,38 @@ export function fmtEntryValue(e) {
   return text;
 }
 
-function ExerciseRow({ exercise, tier, addEntry, lastFor, onCelebrate }) {
+function SessionNote({ note }) {
+  const [open, setOpen] = useState(true);
+  if (!note) return null;
+  return (
+    <div className="session-note">
+      <div className="session-note-head">
+        <div>
+          <span className="session-note-eyebrow">Just for today</span>
+          <div className="session-note-headline">{note.headline}</div>
+        </div>
+        <button className="btn btn-ghost btn-sm" onClick={() => setOpen((o) => !o)}>
+          {open ? "Hide" : "Show"}
+        </button>
+      </div>
+      {open && (
+        <>
+          {note.why && <p className="session-note-why">{note.why}</p>}
+          {note.stopRules?.length > 0 && (
+            <ul className="session-note-rules">
+              {note.stopRules.map((r) => (
+                <li key={r}>{r}</li>
+              ))}
+            </ul>
+          )}
+          <div className="session-note-foot">Clears itself tomorrow.</div>
+        </>
+      )}
+    </div>
+  );
+}
+
+function ExerciseRow({ exercise, tier, addEntry, lastFor, onCelebrate, adjustments, muteCelebrations }) {
   const variants = useMemo(() => [exercise, ...(exercise.alternates || [])], [exercise]);
   const [variantIndex, setVariantIndex] = useState(0);
   const active = variants[variantIndex];
@@ -51,6 +82,7 @@ function ExerciseRow({ exercise, tier, addEntry, lastFor, onCelebrate }) {
   const [pr, setPr] = useState(null);
   const prTimeout = useRef(null);
   const last = lastFor(active.name);
+  const adjustment = adjustments ? adjustments[active.name] : null;
   // Prefill from the previous session so a repeat set is a single tap on Log.
   const lastWeight = !isRepsOnly && !isHold && last && last.weight != null ? last.weight : null;
   const lastReps = !isHold && last && last.reps != null ? last.reps : null;
@@ -84,7 +116,7 @@ function ExerciseRow({ exercise, tier, addEntry, lastFor, onCelebrate }) {
     } else if (w == null && last.weight == null && r != null && last.reps != null && r > last.reps) {
       delta = `+${r - last.reps} reps`;
     }
-    if (!delta) return;
+    if (!delta || muteCelebrations) return;
     const text = PR_MESSAGES[Math.floor(Math.random() * PR_MESSAGES.length)];
     setPr({ text: `${text} ${delta}`, key: Date.now() });
     clearTimeout(prTimeout.current);
@@ -119,12 +151,12 @@ function ExerciseRow({ exercise, tier, addEntry, lastFor, onCelebrate }) {
     addEntry({ exerciseName: active.name, done: true });
     setLogged(true);
     setTimeout(() => setLogged(false), 1400);
-    if (Math.random() < 0.25) onCelebrate();
+    if (!muteCelebrations && Math.random() < 0.25) onCelebrate();
   }
 
   return (
     <div
-      className={`exercise-row ${pr ? "exercise-row-pr" : ""}`}
+      className={`exercise-row ${pr ? "exercise-row-pr" : ""} ${adjustment ? `exercise-row-adjusted exercise-row-${adjustment.tone || "ease"}` : ""}`}
       style={tier ? { borderLeftColor: TIERS[tier].color } : undefined}
     >
       <div className="exercise-info">
@@ -144,6 +176,12 @@ function ExerciseRow({ exercise, tier, addEntry, lastFor, onCelebrate }) {
         )}
         <div className="exercise-name">{active.name}</div>
         <div className="exercise-target">{active.target}</div>
+        {adjustment && (
+          <div className={`row-adjust row-adjust-${adjustment.tone || "ease"}`}>
+            <span className="row-adjust-tag">{adjustment.tag}</span>
+            <span className="row-adjust-detail">{adjustment.detail}</span>
+          </div>
+        )}
         {last && (
           <div className="exercise-last">
             {isCheck
@@ -228,10 +266,14 @@ function WorkoutView({ addEntry, lastFor, onOpenTimer, onCelebrate, checkInProps
   const today = dayKeyForToday();
   const [dayKey, setDayKey] = useState(today || "tue");
   const day = PROGRAM[dayKey];
+  const note = useMemo(() => sessionNoteForToday(), []);
+  // Today's adjustments only apply to today's session, not to other day tabs.
+  const adjustments = note && dayKey === today ? note.adjustments : null;
 
   return (
     <div>
       <CheckIn {...checkInProps} />
+      <SessionNote note={note} />
 
       <div className="day-tabs">
         {DAY_KEYS.map((k) => (
@@ -277,6 +319,8 @@ function WorkoutView({ addEntry, lastFor, onOpenTimer, onCelebrate, checkInProps
                   addEntry={addEntry}
                   lastFor={lastFor}
                   onCelebrate={onCelebrate}
+                  adjustments={adjustments}
+                  muteCelebrations={Boolean(adjustments && note.muteCelebrations)}
                 />
               ))}
             </section>

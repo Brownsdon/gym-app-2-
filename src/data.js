@@ -240,4 +240,75 @@ export function dayKeyForToday() {
   return null; // no session today; caller decides fallback
 }
 
+// --- Day keys (local time, so a session lands on the day you trained) ---
+
+export function localDayKey(iso) {
+  const d = new Date(iso);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+export function todayKey() {
+  return localDayKey(new Date().toISOString());
+}
+
+// --- Session notes -------------------------------------------------------
+// Short-lived, date-stamped adjustments agreed in conversation. A note is
+// only ever read on its own date, so the programme reverts to normal by
+// itself the next day — nothing to remember to undo.
+//
+// tone drives the badge colour: "ease" | "swap" | "skip" | "go".
+// muteCelebrations silences the PR pops, for days where chasing a number
+// is the opposite of the plan.
+
+export const SESSION_NOTES = {
+  "2026-09-17": {
+    headline: "Caution day — hip sensitive, back 2 days post-flare",
+    why: "Hip was catching Wednesday and the back flared Tuesday night. Graded exposure still applies, just a few notches down. Deadlift is 29 days stale, so today reopens the pattern rather than loading it.",
+    muteCelebrations: true,
+    stopRules: [
+      "Hip catches during step-downs or Airplane → drop the grade again, don't push through. Pain-free is the target.",
+      "Any back tightness in the hinge warm-up → the hinge is done for today. No negotiating mid-session.",
+      "Nothing new: no PRs, no top loads, no first-time exercises.",
+    ],
+    adjustments: {
+      "Airplane": { tone: "ease", tag: "Ease", detail: "Grade ~L3 today, not L5." },
+      "Hip IR Step-Downs": {
+        tone: "ease",
+        tag: "Ease",
+        detail: "Grade ~L3 today. This is the provocative position and the hip is sensitive.",
+      },
+      "Hip IR Isometric Holds": { tone: "ease", tag: "Ease", detail: "Grade ~L3 today, not L5." },
+      "Deadlift": {
+        tone: "ease",
+        tag: "Light re-entry",
+        detail: "100–110 lb, 2 sets of 8, dumbbells not barbell. Last deadlift was 29 days ago at 150.",
+      },
+      "Cable Chop, Low to High": {
+        tone: "swap",
+        tag: "Swap",
+        detail: "Take Palloff Press instead — anti-rotation rather than loaded rotation, kinder to the back today.",
+      },
+      "Ab Roll with Wheel": {
+        tone: "skip",
+        tag: "Skip or keep short",
+        detail: "Big anti-extension demand on a back that has just settled.",
+      },
+      "Stability Ball Figure 8s": {
+        tone: "skip",
+        tag: "Not today",
+        detail: "Never logged before — a caution day is the wrong day for a first attempt.",
+      },
+      "Push Ups": {
+        tone: "go",
+        tag: "Promoted",
+        detail: "Upper push is the safest work in the session today, and the light hinge frees the time.",
+      },
+    },
+  },
+};
+
+export function sessionNoteForToday() {
+  return SESSION_NOTES[todayKey()] || null;
+}
+
 export const REST_PRESETS = [60, 90, 120];
