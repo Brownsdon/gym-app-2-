@@ -261,6 +261,16 @@ export function todayKey() {
 // is the opposite of the plan.
 
 export const SESSION_NOTES = {
+  "2026-09-18": {
+    headline: "Easy day — the bike is the safest session you've got right now",
+    why: "Back flared Tuesday, hip was sensitive midweek, both are settling. Cycling loads neither. Worth knowing: your last two interval sessions were logged at RPE 9 and RPE 10 — that is redlining a protocol meant to sit nearer 8, which is a fair reason it feels like a chore. Today is a deliberately easier one.",
+    stopRules: [
+      "Aim RPE 7, not 9. A session you'd repeat next week beats a heroic one you avoid for a month.",
+      "2 or 3 rounds counts. Log it and go — a short session is a completed session.",
+      "Painless clicking is not a reason to skip; note it in the check-in and raise it at the next review.",
+    ],
+    adjustments: {},
+  },
   "2026-09-17": {
     headline: "Caution day — hip sensitive, back 2 days post-flare",
     why: "Hip was catching Wednesday and the back flared Tuesday night. Graded exposure still applies, just a few notches down. Deadlift is 29 days stale, so today reopens the pattern rather than loading it.",
