@@ -261,6 +261,20 @@ export function todayKey() {
 // is the opposite of the plan.
 
 export const SESSION_NOTES = {
+  "2026-09-21": {
+    headline: "Regular Monday — hip's good, just ease the grade back up",
+    why: "One catch all weekend, against most of last Monday and Tuesday. Normal session, no restrictions. Two things only: walk the grade back up rather than jumping to L5, and keep Monday as Monday.",
+    stopRules: [
+      "Grade ~L4 today, not straight back to L5. Step up a notch, see how it sits, go again Thursday.",
+      "No split squats today — they belong to Tuesday. Last Monday's 'bit of Tuesday' is what started this.",
+      "Hip thrusters at 80 lb as normal, full range.",
+    ],
+    adjustments: {
+      "Airplane": { tone: "go", tag: "Step up", detail: "~L4 today — up from Thursday's L3, not back to L5." },
+      "Hip IR Isometric Holds": { tone: "go", tag: "Step up", detail: "~L4 today." },
+      "Hip IR Step-Downs": { tone: "go", tag: "Step up", detail: "~L4 today. This is the drill the hip reacts to, so move it a notch at a time." },
+    },
+  },
   "2026-09-18": {
     headline: "Easy day — the bike is the safest session you've got right now",
     why: "Back flared Tuesday, hip was sensitive midweek, both are settling. Cycling loads neither. Worth knowing: your last two interval sessions were logged at RPE 9 and RPE 10 — that is redlining a protocol meant to sit nearer 8, which is a fair reason it feels like a chore. Today is a deliberately easier one.",
