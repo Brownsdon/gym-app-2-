@@ -25,13 +25,14 @@ export function fmtEntryValue(e) {
     return e.note ? `${parts.join(" · ")} — ${e.note}` : parts.join(" · ");
   }
   if (e.modality) return `${e.modality}${e.rpe ? ` · RPE ${e.rpe}` : ""}`;
-  if (e.done) return "✓ Done";
   const parts = [];
   if (e.weight != null) parts.push(`${e.weight} lb`);
   if (e.seconds != null) parts.push(`${e.seconds}s`);
   if (e.reps != null) parts.push(`${e.reps} reps`);
   let text = parts.join(" × ");
   if (e.level != null) text += `${text ? " · " : ""}level ${e.level}`;
+  if (e.done) text = "✓ Done";
+  if (e.note) text += `${text ? " — " : ""}${e.note}`;
   return text;
 }
 
@@ -78,6 +79,8 @@ function ExerciseRow({ exercise, tier, addEntry, lastFor, onCelebrate, adjustmen
   const [reps, setReps] = useState("");
   const [seconds, setSeconds] = useState("");
   const [level, setLevel] = useState("");
+  const [note, setNote] = useState("");
+  const [showNote, setShowNote] = useState(false);
   const [logged, setLogged] = useState(false);
   const [pr, setPr] = useState(null);
   const prTimeout = useRef(null);
@@ -95,6 +98,8 @@ function ExerciseRow({ exercise, tier, addEntry, lastFor, onCelebrate, adjustmen
     setReps("");
     setSeconds("");
     setLevel("");
+    setNote("");
+    setShowNote(false);
   }, [variantIndex]);
 
   useEffect(() => () => clearTimeout(prTimeout.current), []);
@@ -138,6 +143,7 @@ function ExerciseRow({ exercise, tier, addEntry, lastFor, onCelebrate, adjustmen
       reps: r,
       ...(s != null ? { seconds: s } : {}),
       ...(lv != null ? { level: lv } : {}),
+      ...(note.trim() ? { note: note.trim() } : {}),
     });
     setLogged(true);
     setTimeout(() => setLogged(false), 1400);
@@ -145,10 +151,14 @@ function ExerciseRow({ exercise, tier, addEntry, lastFor, onCelebrate, adjustmen
     setReps("");
     setSeconds("");
     setLevel("");
+    setNote("");
+    setShowNote(false);
   }
 
   function markDone() {
-    addEntry({ exerciseName: active.name, done: true });
+    addEntry({ exerciseName: active.name, done: true, ...(note.trim() ? { note: note.trim() } : {}) });
+    setNote("");
+    setShowNote(false);
     setLogged(true);
     setTimeout(() => setLogged(false), 1400);
     if (!muteCelebrations && Math.random() < 0.25) onCelebrate();
@@ -182,6 +192,14 @@ function ExerciseRow({ exercise, tier, addEntry, lastFor, onCelebrate, adjustmen
             <span className="row-adjust-detail">{adjustment.detail}</span>
           </div>
         )}
+        <button
+          type="button"
+          className="note-toggle"
+          onClick={() => setShowNote((v) => !v)}
+          aria-expanded={showNote}
+        >
+          {showNote ? "− note" : note ? "✎ note added" : "+ note"}
+        </button>
         {last && (
           <div className="exercise-last">
             {isCheck
@@ -257,6 +275,15 @@ function ExerciseRow({ exercise, tier, addEntry, lastFor, onCelebrate, adjustmen
             {logged ? "✓" : "Log"}
           </button>
         </form>
+      )}
+      {showNote && (
+        <input
+          className="log-input exercise-note-input"
+          placeholder="How did it feel? e.g. twinge at full depth, right leg back"
+          aria-label={`Note for ${active.name}`}
+          value={note}
+          onChange={(e) => setNote(e.target.value)}
+        />
       )}
     </div>
   );

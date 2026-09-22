@@ -991,3 +991,24 @@ button:focus-visible, input:focus-visible {
 .row-adjust-swap .row-adjust-tag { background: var(--compound); }
 .row-adjust-skip .row-adjust-tag { background: var(--ink-soft); }
 .row-adjust-go   .row-adjust-tag { background: var(--rehab); }
+
+/* --- Per-set notes --- */
+
+.exercise-row { flex-wrap: wrap; }
+
+.note-toggle {
+  border: none;
+  background: transparent;
+  padding: 3px 0 0;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+
+.exercise-note-input {
+  width: 100%;
+  text-align: left;
+  margin-top: 8px;
+  font-size: 15px;
+}
