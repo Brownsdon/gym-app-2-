@@ -261,6 +261,32 @@ export function todayKey() {
 // is the opposite of the plan.
 
 export const SESSION_NOTES = {
+  "2026-09-22": {
+    headline: "Full Tuesday — first session with both triggers back in it",
+    why: "Hip's good, back's settled, so this is a normal session with no restrictions. Worth naming what today is, though: split squats are what nudged the hip on the 14th, and 160 lb squats are what the back reacted to on the 15th. Both are back, in the same session, for the first time since. Run them — just not at the ceiling.",
+    stopRules: [
+      "One squat pattern, not two. Barbell or goblet — the 14th had both plus split squats, and that stacked up.",
+      "Grade holds at L4 today. Monday was the step up; step again Thursday if it stays quiet.",
+      "Anything from the hip during split squats, or the back during squats, and that lift is done for today.",
+    ],
+    adjustments: {
+      "Split Squat": {
+        tone: "ease",
+        tag: "Hold at 90",
+        detail: "90 lb, 2-3 sets, no more. This is the hip's exposure, not a progression day.",
+      },
+      "Squat (Barbell)": {
+        tone: "ease",
+        tag: "145-150, not 160",
+        detail: "160 x 12 x 3 is the exact load the back reacted to last Tuesday. Rebuild to it over two or three sessions.",
+      },
+      "Lat Pull Down": {
+        tone: "go",
+        tag: "Take it if time",
+        detail: "Upper pull is your most-skipped block and pulling volume is thin. Good day for it — the lower work is capped.",
+      },
+    },
+  },
   "2026-09-21": {
     headline: "Regular Monday — hip's good, just ease the grade back up",
     why: "One catch all weekend, against most of last Monday and Tuesday. Normal session, no restrictions. Two things only: walk the grade back up rather than jumping to L5, and keep Monday as Monday.",
