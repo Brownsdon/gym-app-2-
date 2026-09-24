@@ -296,6 +296,13 @@ function WorkoutView({ addEntry, lastFor, onOpenTimer, onCelebrate, checkInProps
   const note = useMemo(() => sessionNoteForToday(), []);
   // Today's adjustments only apply to today's session, not to other day tabs.
   const adjustments = note && dayKey === today ? note.adjustments : null;
+  // A note can slot extra exercises into today's session (after the motor
+  // control block) so a swapped-in lift can be logged from the day it's done.
+  const blocks = useMemo(() => {
+    if (!day.blocks || !note || dayKey !== today || !note.extraBlocks) return day.blocks;
+    const [first, ...rest] = day.blocks;
+    return [first, ...note.extraBlocks, ...rest];
+  }, [day, note, dayKey, today]);
 
   return (
     <div>
@@ -327,7 +334,7 @@ function WorkoutView({ addEntry, lastFor, onOpenTimer, onCelebrate, checkInProps
         <IntervalDay protocol={day.protocol} addEntry={addEntry} lastFor={lastFor} />
       ) : (
         <>
-          {day.blocks.map((block) => (
+          {blocks.map((block) => (
             <section key={block.title} className="block">
               <div className="block-header">
                 <h3>{block.title}</h3>

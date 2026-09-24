@@ -261,6 +261,48 @@ export function todayKey() {
 // is the opposite of the plan.
 
 export const SESSION_NOTES = {
+  "2026-09-24": {
+    headline: "Squat swaps in for deadlift today — light, to close the gap",
+    why: "The barbell squat hasn't been done since the 160 lb session that provoked your back on the 15th. Left until Tuesday it becomes a 14-day gap on your worst gap-then-spike lift. Deadlift had its light re-entry last Thursday, so it can wait a week. Doing both today would stack two spine-loading lifts in one session — the same stacking that went wrong on the 14th–15th. So: one or the other, and the squat is the one with the open risk.",
+    stopRules: [
+      "Squat ~135 lb × 10, 2–3 sets. That's reopening the pattern, not testing it. Legs will feel it's easy — that's the point; it's the back we're checking.",
+      "Any back tightness during warm-up or working sets → stop squatting for today, finish the session without it.",
+      "Comfortable depth only. Tuesday's twinge was at end-range; no need to chase the bottom of the squat today.",
+      "Grades hold at L4 — Tuesday's twinge means this wasn't a fully quiet week. Step up next Monday if it stays calm.",
+      "Log a check-in. It's still the gap in the data.",
+    ],
+    extraBlocks: [
+      {
+        title: "Today — Squat (swapped in)",
+        tier: "compound",
+        exercises: [
+          {
+            name: "Squat (Barbell)",
+            target: "Light re-entry: ~135 lb × 10, 2–3 sets",
+            alternates: [{ name: "Goblet Squat to Bench", target: "If the rack's busy again: 70–80 lb × 10, 2 sets" }],
+          },
+        ],
+      },
+    ],
+    adjustments: {
+      "Squat (Barbell)": {
+        tone: "go",
+        tag: "Light re-entry",
+        detail: "~135 lb, not 160. 9 days since the load that flared your back. Rebuild: ~145 Tue, 150+ after that.",
+      },
+      "Goblet Squat to Bench": {
+        tone: "swap",
+        tag: "Rack busy?",
+        detail: "Use this instead — same pattern, less spinal load. Don't do both.",
+      },
+      "Deadlift": {
+        tone: "skip",
+        tag: "Skip today",
+        detail: "Squat takes the lower slot. Back next Thursday at ~110 lb — the second step of its re-entry.",
+      },
+      "Hip IR Step-Downs": { tone: "ease", tag: "Hold L4", detail: "Not L5 yet — Tuesday's twinge says wait one more session." },
+    },
+  },
   "2026-09-22": {
     headline: "Full Tuesday — first session with both triggers back in it",
     why: "Hip's good, back's settled, so this is a normal session with no restrictions. Worth naming what today is, though: split squats are what nudged the hip on the 14th, and 160 lb squats are what the back reacted to on the 15th. Both are back, in the same session, for the first time since. Run them — just not at the ceiling.",
