@@ -1012,3 +1012,11 @@ button:focus-visible, input:focus-visible {
   margin-top: 8px;
   font-size: 15px;
 }
+
+/* --- Friday session choice --- */
+
+.mode-toggle {
+  display: flex;
+  gap: 8px;
+  margin: -6px 0 16px;
+}

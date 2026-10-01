@@ -218,6 +218,65 @@ export const PROGRAM = {
       restSeconds: 180,
       modalities: ["Bike", "Rower", "Run", "Other"],
     },
+    // Fallback for Fridays where intervals can't happen (broken bike, team
+    // lunch): the push/pull volume the week is usually short of, behind a
+    // quick pass of the hip block. Same exercise names as the other days so
+    // history, last-time prefill and Progress all line up.
+    alt: {
+      label: "Upper body",
+      title: "Upper Body + Quick Hip Block",
+      note: "For Fridays the intervals can't happen. Quick hip block, then the push and pull volume the week runs short of. If you trained upper body yesterday, go lighter or do the intervals instead.",
+      duration: "35–40 min",
+      blocks: [
+        {
+          title: "Motor Control",
+          tier: "control",
+          note: "Quick version: 1 set of each, the bottom of Claire's ranges. About 5 minutes.",
+          exercises: MOTOR_CONTROL,
+        },
+        {
+          title: "Upper Pull",
+          tier: "compound",
+          exercises: [
+            {
+              name: "Pull Ups",
+              target: "3 sets — stop 1–2 reps short of failure",
+              logType: "reps",
+              alternates: [{ name: "Lat Pull Down", target: "3 sets × 8–12, last set close to failure" }],
+            },
+            {
+              name: "Cable Rows",
+              target: "3 sets × 10–12 — controlled, last set close to failure",
+              alternates: [{ name: "Reverse Fly", target: "3 sets × 10–12" }],
+            },
+          ],
+        },
+        {
+          title: "Upper Push",
+          tier: "compound",
+          exercises: [
+            {
+              name: "Dumbbell Chest Press",
+              target: "3 sets × 8–12, per hand — last set close to failure",
+              alternates: [{ name: "Push Ups", target: "3 sets — stop 1–2 reps short of failure", logType: "reps" }],
+            },
+            {
+              name: "Overhead Dumbbell Press",
+              target: "3 sets × 8–12, per hand",
+              alternates: [
+                { name: "Overhead Farmers Carry", target: "2 sets" },
+                { name: "Farmers Carry", target: "2 sets" },
+              ],
+            },
+          ],
+        },
+        {
+          title: "Back",
+          tier: "compound",
+          exercises: [{ name: "Supermans (hold + swimmers)", target: "2 sets", logType: "reps" }],
+        },
+      ],
+    },
   },
 };
 

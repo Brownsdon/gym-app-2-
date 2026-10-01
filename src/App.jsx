@@ -289,10 +289,37 @@ function ExerciseRow({ exercise, tier, addEntry, lastFor, onCelebrate, adjustmen
   );
 }
 
+// Friday's choice (intervals or the upper-body fallback) is remembered for the
+// day only, so next Friday starts back on intervals without anything to undo.
+const FRIDAY_MODE_KEY = "rb-friday-mode";
+
+function readFridayMode() {
+  try {
+    const r = JSON.parse(localStorage.getItem(FRIDAY_MODE_KEY));
+    return r && r.date === todayKey() ? r.mode : "intervals";
+  } catch {
+    return "intervals";
+  }
+}
+
 function WorkoutView({ addEntry, lastFor, onOpenTimer, onCelebrate, checkInProps }) {
   const today = dayKeyForToday();
   const [dayKey, setDayKey] = useState(today || "tue");
-  const day = PROGRAM[dayKey];
+  const [fridayMode, setFridayMode] = useState(readFridayMode);
+  const hasAlt = dayKey === "fri" && Boolean(PROGRAM.fri.alt);
+  const day =
+    hasAlt && fridayMode === "upper"
+      ? { ...PROGRAM.fri, ...PROGRAM.fri.alt, type: "strength" }
+      : PROGRAM[dayKey];
+
+  function chooseFridayMode(mode) {
+    setFridayMode(mode);
+    try {
+      localStorage.setItem(FRIDAY_MODE_KEY, JSON.stringify({ date: todayKey(), mode }));
+    } catch {
+      // storage unavailable — the choice just won't survive a reload
+    }
+  }
   const note = useMemo(() => sessionNoteForToday(), []);
   // Today's adjustments only apply to today's session, not to other day tabs.
   const adjustments = note && dayKey === today ? note.adjustments : null;
@@ -321,6 +348,25 @@ function WorkoutView({ addEntry, lastFor, onOpenTimer, onCelebrate, checkInProps
           </button>
         ))}
       </div>
+
+      {hasAlt && (
+        <div className="mode-toggle" role="group" aria-label="Friday session">
+          {[
+            ["intervals", "Intervals"],
+            ["upper", PROGRAM.fri.alt.label],
+          ].map(([mode, label]) => (
+            <button
+              key={mode}
+              type="button"
+              className={`chip ${fridayMode === mode ? "chip-active" : ""}`}
+              aria-pressed={fridayMode === mode}
+              onClick={() => chooseFridayMode(mode)}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      )}
 
       <div className="day-header">
         <div>
