@@ -261,6 +261,63 @@ export function todayKey() {
 // is the opposite of the plan.
 
 export const SESSION_NOTES = {
+  "2026-10-01": {
+    headline: "Thursday — thrusters back in, more intent on the upper body",
+    why: "Deadlift had its slot Monday (100 x 12 x 3) and the squat pattern had Tuesday (goblet), so the lower lift that's actually due is hip thrusters: last done 21 Sep, 10 days ago. Upper push and pull are promoted from if-time, because they're what the last few weeks have been short of (about 2-5 hard sets a week each). The hip block is held to the lower-middle of Claire's ranges to pay for it. Sets that build muscle end with 1-2 reps left in the tank, not 6.",
+    stopRules: [
+      "Hip caught a bit more than usual Wednesday but there's no pain and nothing in the gym. No restrictions. If catching picks up during the session, drop the step-downs one grade and carry on.",
+      "Last 1-2 reps of each strength set should be properly hard. If form goes or the back tightens, that set is the last one.",
+      "Dumbbell weights are per hand, the way you log your presses.",
+      "Log a check-in, including what Wednesday involved. It's still the gap in the data.",
+    ],
+    extraBlocks: [
+      {
+        title: "Today - Hip Thrusters (due)",
+        tier: "compound",
+        exercises: [
+          {
+            name: "Hip Thrusters",
+            target: "~90 lb x 12 x 3, full range to neutral. Last set a real effort; if set 1 is a grind, drop to 85",
+          },
+        ],
+      },
+    ],
+    adjustments: {
+      "Hip Thrusters": {
+        tone: "go",
+        tag: "Step up",
+        detail: "Last was 80 x 20 x 2. Fewer reps, a bit more load, closer to failure. Cleared to neutral.",
+      },
+      "Deadlift": {
+        tone: "skip",
+        tag: "Did it Mon",
+        detail: "100 x 12 x 3 on Monday. Next one is ~110, Monday or next Thursday.",
+      },
+      "Airplane": {
+        tone: "go",
+        tag: "L5, fewer reps",
+        detail: "Claire's range is 6-10 reps; you've been doing 15. Try L5 at 8-10 reps, 2 sets. Same quality, less time.",
+      },
+      "Hip IR Step-Downs": { tone: "ease", tag: "Hold L4", detail: "Still the drill the hip reacts to. Stay at L4 one more session." },
+      "Hip IR Isometric Holds": { tone: "ease", tag: "Hold L4", detail: "25-30s at L4." },
+      "Cable Chop, Low to High": {
+        tone: "swap",
+        tag: "Palloff today",
+        detail: "Chop was Monday; Palloff is 14 days stale. 2 sets, then stop. Core is the first cut if time's short.",
+      },
+      "Dumbbell Chest Press": {
+        tone: "go",
+        tag: "Promoted",
+        detail: "3 hard sets, per hand. 50 x 12 has been the number, so try 55 x 8-10 or keep 50 and take the last set close to failure.",
+      },
+      "Push Ups": { tone: "go", tag: "Promoted", detail: "Never logged. Fine as a swap, but the press gives you a load to progress." },
+      "Cable Rows": {
+        tone: "go",
+        tag: "Promoted",
+        detail: "Not logged since 30 Jul, and pulling has been about 3-5 sets a week. Start ~100-105, 3 x 10-12, controlled, chest tall.",
+      },
+    },
+  },
   "2026-09-24": {
     headline: "Squat swaps in for deadlift today — light, to close the gap",
     why: "The barbell squat hasn't been done since the 160 lb session that provoked your back on the 15th. Left until Tuesday it becomes a 14-day gap on your worst gap-then-spike lift. Deadlift had its light re-entry last Thursday, so it can wait a week. Doing both today would stack two spine-loading lifts in one session — the same stacking that went wrong on the 14th–15th. So: one or the other, and the squat is the one with the open risk.",
