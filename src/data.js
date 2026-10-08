@@ -320,6 +320,54 @@ export function todayKey() {
 // is the opposite of the plan.
 
 export const SESSION_NOTES = {
+  "2026-10-09": {
+    headline: "Friday - intervals again on the arc trainer, same effort as last week",
+    why: "Last Friday's arc trainer session was RPE 8: the first interval session at the intended effort (the ones before were 9, 10, then 6). Repeat it rather than chasing more. Deadlift today puts some fatigue in the legs, so judge the session by RPE, not by speed or distance.",
+    stopRules: [
+      "RPE 7-8. If you're at 9 by round 2, ease off. Three rounds at 8 beats four at 10.",
+      "Skip the Upper body option unless today's upper work got skipped. Chest press and rows yesterday means a second upper session within 24 hours.",
+      "Log RPE and the machine. Arc trainer is the useful bit of data now that the bike is out.",
+    ],
+    adjustments: {},
+  },
+  "2026-10-08": {
+    headline: "Thursday - deadlift due, glutes still sore, hip good",
+    why: "Deadlift is the lift that's due: last done 28 Sep (100 x 12 x 3), and since then you've had squats to 160 on Tuesday and thrusters at 120 on Monday. Sore glutes are normal after that and aren't a reason to skip, but they can make the hinge feel off, so ramp up and let the first set tell you. Chest press is due too (1 Oct). Rows were Tuesday, so today's pull stays light.",
+    stopRules: [
+      "Deadlift: ramp 100, 105, 110 x 10. If the sore glutes make the hinge feel grabby, or the back tightens, stay at 100 and stop at 2 sets.",
+      "No thrusters and no squats today. Monday and Tuesday covered them, and the glutes get a day.",
+      "Bent-over rowing puts the lower back in a held hinge, the area that flared in September. If that's the plan, keep it light, 2 sets, stop at any tightness. Seated cable rows spare it.",
+      "Hip block as normal. All five drills are now at the top of Claire's ranges, so that's a question for her rather than a reason to skip it.",
+    ],
+    adjustments: {
+      "Deadlift": {
+        tone: "go",
+        tag: "Step up",
+        detail: "105-110 x 10 x 3, ramped across the sets. Last was 100 x 12 x 3. Stop at 100 if the hinge feels off.",
+      },
+      "Dumbbell Chest Press": {
+        tone: "go",
+        tag: "Due",
+        detail: "55 x 10, 10, 6 last time, per hand. Get all three sets to 10 at 55 before going to 60.",
+      },
+      "Push Ups": { tone: "go", tag: "Due", detail: "The chest press has the load to progress, so use that." },
+      "Cable Rows": {
+        tone: "swap",
+        tag: "Light today",
+        detail: "Tuesday was 130 x 10. Today 2 sets at about 115 x 12 is plenty.",
+      },
+      "Reverse Fly": {
+        tone: "swap",
+        tag: "Light",
+        detail: "14 days since last. 2 x 12, light. A bent-over setup loads the lower back, so stop at any tightness.",
+      },
+      "Cable Chop, Low to High": {
+        tone: "swap",
+        tag: "Palloff today",
+        detail: "Chop was Tuesday. Palloff, 2 sets, then stop. Core is the first cut if time's short.",
+      },
+    },
+  },
   "2026-10-01": {
     headline: "Thursday — thrusters back in, more intent on the upper body",
     why: "Deadlift had its slot Monday (100 x 12 x 3) and the squat pattern had Tuesday (goblet), so the lower lift that's actually due is hip thrusters: last done 21 Sep, 10 days ago. Upper push and pull are promoted from if-time, because they're what the last few weeks have been short of (about 2-5 hard sets a week each). The hip block is held to the lower-middle of Claire's ranges to pay for it. Sets that build muscle end with 1-2 reps left in the tank, not 6.",
