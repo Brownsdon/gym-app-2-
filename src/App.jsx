@@ -327,6 +327,7 @@ function WorkoutView({ addEntry, lastFor, onOpenTimer, onCelebrate, checkInProps
   // control block) so a swapped-in lift can be logged from the day it's done.
   const blocks = useMemo(() => {
     if (!day.blocks || !note || dayKey !== today || !note.extraBlocks) return day.blocks;
+    if (note.extraBlocksAt === "end") return [...day.blocks, ...note.extraBlocks];
     const [first, ...rest] = day.blocks;
     return [first, ...note.extraBlocks, ...rest];
   }, [day, note, dayKey, today]);

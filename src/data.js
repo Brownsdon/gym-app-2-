@@ -216,7 +216,7 @@ export const PROGRAM = {
       rounds: 4,
       workSeconds: 240,
       restSeconds: 180,
-      modalities: ["Bike", "Rower", "Run", "Other"],
+      modalities: ["Bike", "Elliptical", "Rower", "Run", "Other"],
     },
     // Fallback for Fridays where intervals can't happen (broken bike, team
     // lunch): the push/pull volume the week is usually short of, behind a
@@ -320,6 +320,116 @@ export function todayKey() {
 // is the opposite of the plan.
 
 export const SESSION_NOTES = {
+  "2026-10-23": {
+    headline: "Friday - elliptical again, and check in on the back",
+    why: "Two elliptical sessions at RPE 7 in a row, which is the intervals finally being done consistently. The protocol target is around 8, so let the last two rounds reach it. Today is also the day after the deadlift, so the back check-in matters more than the intervals do.",
+    stopRules: [
+      "RPE 7 on rounds 1-2, up to 8 on rounds 3-4. 9 or above means ease off.",
+      "Log the back in the check-in this morning, whether it feels fine or 'used'. The used-for-days feeling is the thing that hasn't been in the record.",
+    ],
+    adjustments: {},
+  },
+  "2026-10-22": {
+    headline: "Thursday - deadlift holds, the back gets a vote",
+    why: "Last Thursday's 140 x 10 x 3 left the mid-low back 'used' for days. 140 is under your 150 from August, but 100 to 140 in 17 days is a quick climb, and the back is the one place this has gone wrong before. Hold the load and let the back catch up. Rule: add weight only after a deadlift week where the back is clean by Saturday.",
+    stopRules: [
+      "Deadlift 130 x 10 x 3, ramped 110, 120, 130. No jump this week.",
+      "Squat Tuesday and deadlift Thursday are 48 hours apart. If Tuesday's squats left the back used, drop to 120 x 10 x 2 today.",
+      "Note the back in Friday's and Saturday's check-ins. If it's used for more than two days, the next deadlift steps back, not forward.",
+      "Anything radiating, numb, tingling or weak is a call to Claire, not a workaround.",
+      "Hip block: keep step-downs and holds at 2 sets each. Trim the other drills first if you're short on time.",
+    ],
+    adjustments: {
+      "Deadlift": {
+        tone: "ease",
+        tag: "Hold",
+        detail: "130 x 10 x 3, ramped. Last was 140 x 10 x 3, which left the back used for days.",
+      },
+      "Dumbbell Chest Press": {
+        tone: "go",
+        tag: "Step up",
+        detail: "55 x 10 across is done, so try 60 per hand x 8-10.",
+      },
+      "Push Ups": { tone: "go", tag: "Use the press", detail: "Switch to the chest press. 55 x 10 is done, so try 60 per hand x 8-10." },
+    },
+  },
+  "2026-10-20": {
+    headline: "Tuesday - squat can step up because the deadlift is holding",
+    why: "One spinal-loading progression per week keeps the back from taking two jumps at once. Thursday's deadlift is holding, so the squat is the one that can step. 160 x 12 x 3 is done twice now. Last Tuesday's session was rushed and had only 4 hip-control sets, so today the hip drills get their two sets back.",
+    stopRules: [
+      "Squat 165 x 10 x 3 if the back has been quiet since Thursday. If it's still used, repeat 160 x 12.",
+      "Split squat at 80, comfortable depth only. The hip has reacted at the deep rear-leg position on 22 Sep and 6 Oct.",
+      "Step-downs and holds at 2 sets each. These two are the graded-exposure drills, so trim BOSU or abduction first if you're short on time.",
+      "Back check-in today, even if it's a 0.",
+    ],
+    adjustments: {
+      "Squat (Barbell)": {
+        tone: "go",
+        tag: "Step up",
+        detail: "165 x 10 x 3 if the back is quiet. Otherwise 160 x 12 again.",
+      },
+      "Split Squat": {
+        tone: "ease",
+        tag: "Depth",
+        detail: "80, comfortable depth only. Stop short of the deep rear-leg position.",
+      },
+      "Hip IR Step-Downs": { tone: "go", tag: "2 sets", detail: "Skipped last Tuesday. Protect these two." },
+      "Hip IR Isometric Holds": { tone: "go", tag: "2 sets", detail: "1 set last Tuesday. Back to 2 x 30s." },
+      "Lat Pull Down": { tone: "skip", tag: "Done Mon", detail: "Pull-ups were Monday. Skip or 1 light set." },
+      "Pull Ups": { tone: "skip", tag: "Done Mon", detail: "Pulling was Monday. Skip or 1 light set." },
+    },
+  },
+  "2026-10-19": {
+    headline: "Monday - heavy sets that don't load the back, hip drills protected",
+    why: "Thursday's deadlift left the mid-low back 'used' for days: not sore, glutes fine. 100 to 140 in 17 days is a fast climb, though 140 is still under your 150 from August. Today's heavy sets are the ones that don't ask the back to hold a hinge: thrusters, pull-ups and overhead press. Thrusters and pull-ups are both 14 days stale.",
+    stopRules: [
+      "If the back still feels used, skip the ab roll and keep pull-ups to 2 sets. Anything sharper, or anything radiating, is a call to Claire, not a workaround.",
+      "Heavy work today is thrusters, pull-ups, press. The spine-loading lifts are Tuesday's squat and Thursday's deadlift, not today.",
+      "Step-downs and holds at 2 sets each. If you're short on time, trim BOSU or abduction first.",
+      "Log the back in today's check-in as well as the hip. Thursday to Sunday is missing from the record.",
+    ],
+    extraBlocksAt: "end",
+    extraBlocks: [
+      {
+        title: "Today - Pull + Press (heavy, earlier in the week)",
+        tier: "compound",
+        exercises: [
+          {
+            name: "Pull Ups",
+            target: "3 sets, stop 1-2 reps short of failure",
+            logType: "reps",
+            alternates: [{ name: "Lat Pull Down", target: "3 sets x 8-12, last set close to failure" }],
+          },
+          { name: "Overhead Dumbbell Press", target: "3 sets x 8-10, per hand" },
+        ],
+      },
+    ],
+    adjustments: {
+      "Hip Thrusters": {
+        tone: "go",
+        tag: "Hold 120",
+        detail: "120 x 20 x 3. 14 days since last. Hold the load, since the pace was already a question for Claire.",
+      },
+      "Pull Ups": { tone: "go", tag: "Due", detail: "14 days since last, 6 reps. This is the pulling that has been missing." },
+      "Overhead Dumbbell Press": {
+        tone: "go",
+        tag: "Step up",
+        detail: "40 x 12 for four weeks. Try 45 x 8-10 per hand.",
+      },
+      "Ab Roll with Wheel": {
+        tone: "ease",
+        tag: "Check the back",
+        detail: "If the mid-low back still feels used from Thursday, skip it.",
+      },
+      "Single Leg Sit to Stand": {
+        tone: "skip",
+        tag: "Your call",
+        detail: "You've said the step-downs and holds cover this. It's Claire's prescription, so raise it at the next review.",
+      },
+      "Hip IR Step-Downs": { tone: "go", tag: "2 sets", detail: "These two are the graded-exposure drills. Protect them." },
+      "Hip IR Isometric Holds": { tone: "go", tag: "2 sets", detail: "2 x 30s." },
+    },
+  },
   "2026-10-09": {
     headline: "Friday - intervals again on the arc trainer, same effort as last week",
     why: "Last Friday's arc trainer session was RPE 8: the first interval session at the intended effort (the ones before were 9, 10, then 6). Repeat it rather than chasing more. Deadlift today puts some fatigue in the legs, so judge the session by RPE, not by speed or distance.",
