@@ -74,6 +74,10 @@ function ExerciseRow({ exercise, tier, addEntry, lastFor, onCelebrate, adjustmen
   const isCheck = active.logType === "check";
   const isRepsOnly = active.logType === "reps";
   const isHold = active.logType === "hold";
+  // Reps-only drills that can also be loaded (weighted Airplane / step-downs):
+  // the weight box shows, but blank or 0 still means bodyweight.
+  const optionalWeight = Boolean(active.optionalWeight);
+  const showWeight = optionalWeight || (!isRepsOnly && !isHold);
   const isGraded = Boolean(active.graded);
   const [weight, setWeight] = useState("");
   const [reps, setReps] = useState("");
@@ -87,7 +91,7 @@ function ExerciseRow({ exercise, tier, addEntry, lastFor, onCelebrate, adjustmen
   const last = lastFor(active.name);
   const adjustment = adjustments ? adjustments[active.name] : null;
   // Prefill from the previous session so a repeat set is a single tap on Log.
-  const lastWeight = !isRepsOnly && !isHold && last && last.weight != null ? last.weight : null;
+  const lastWeight = showWeight && last && last.weight != null ? last.weight : null;
   const lastReps = !isHold && last && last.reps != null ? last.reps : null;
   const lastSeconds = isHold && last && last.seconds != null ? last.seconds : null;
   const lastLevel = isGraded && last && last.level != null ? last.level : null;
@@ -131,7 +135,8 @@ function ExerciseRow({ exercise, tier, addEntry, lastFor, onCelebrate, adjustmen
 
   function submit(e) {
     e.preventDefault();
-    const w = isRepsOnly || isHold ? null : weight ? Number(weight) : lastWeight;
+    let w = !showWeight ? null : weight !== "" ? Number(weight) : lastWeight;
+    if (optionalWeight && w === 0) w = null; // typing 0 logs a bodyweight set
     const r = isHold ? null : reps ? Number(reps) : lastReps;
     const s = isHold ? (seconds ? Number(seconds) : lastSeconds) : null;
     const lv = isGraded ? (level ? Number(level) : lastLevel) : null;
@@ -225,7 +230,7 @@ function ExerciseRow({ exercise, tier, addEntry, lastFor, onCelebrate, adjustmen
               {pr.text}
             </div>
           )}
-          {!isRepsOnly && !isHold && (
+          {showWeight && (
             <input
               type="number"
               inputMode="decimal"

@@ -18,6 +18,8 @@ export const TIERS = {
 // logType: "check" — logged done/not-done, nothing to measure.
 // logType: "reps"  — bodyweight/band work logged by reps only, no weight.
 // logType: "hold"  — time-based hold, logged in seconds rather than reps.
+// optionalWeight   — a reps drill that can also be loaded; adds a weight box
+//                    where blank/0 means bodyweight.
 // graded: true     — progression runs along a quality axis (gradeHint), not
 //                    load. Logs a level number alongside the usual fields.
 const MOTOR_CONTROL = [
@@ -28,8 +30,9 @@ const MOTOR_CONTROL = [
   },
   {
     name: "Airplane",
-    target: "1–3 sets × 6–10 reps — supported; grade by reducing depth and rotation range",
+    target: "1–3 sets × 6–10 reps — supported; grade by reducing depth and rotation range. Weight optional",
     logType: "reps",
+    optionalWeight: true,
     graded: true,
     gradeHint: "Depth + rotation range",
   },
@@ -50,8 +53,9 @@ const MOTOR_CONTROL = [
   },
   {
     name: "Hip IR Step-Downs",
-    target: "2–3 sets × 8–12 reps in internal rotation — grade by degree of hip drop",
+    target: "2–3 sets × 8–12 reps in internal rotation — grade by degree of hip drop. Weight optional",
     logType: "reps",
+    optionalWeight: true,
     graded: true,
     gradeHint: "Degree of hip drop",
   },
