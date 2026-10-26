@@ -68,39 +68,57 @@ const MOTOR_CONTROL_BLOCK = {
   exercises: MOTOR_CONTROL,
 };
 
+// Your own note (19 Oct): the right shoulder is hypermobile and loses
+// control at the top of an overhead press. Not new, not painful.
+const OHP_TARGET =
+  "3 sets × 8–12, per hand. Stop short of lockout if the right shoulder loses control at the top";
+
+// Oct 2026: alternates that were never logged in four months were removed
+// (Single Leg Sit to Stand, Hip Hike + Step Down slot, Hip Flexor Drive with
+// Oblique Twist, Farmers Carry, Lat Pull Down, Stability Ball Figure 8s,
+// Push Ups). All are in Claire's plan — restore from git history if needed.
 export const PROGRAM = {
   mon: {
     label: "Monday",
     short: "Mon",
-    title: "Control + Hip Hinge",
-    note: "Shorter session. Motor control block plus the hip thrust slot — full range, now cleared.",
-    duration: "30–35 min",
+    title: "Control + Hip Thrust, Pull & Press",
+    note: "Your Mondays have become a full session: hip block, thrusters, then pull-ups and press. If time's short, the pull and press block is the cut.",
+    duration: "40–45 min",
     blocks: [
       MOTOR_CONTROL_BLOCK,
       {
         title: "Lower",
         tier: "compound",
-        exercises: [
-          { name: "Hip Thrusters", target: "3 sets — full range to neutral" },
-          {
-            name: "Single Leg Sit to Stand",
-            target: "2 sets",
-            alternates: [{ name: "Hip Hike + Step Down", target: "2 sets", logType: "reps" }],
-          },
-        ],
+        exercises: [{ name: "Hip Thrusters", target: "3 sets × 20 — full range to neutral" }],
       },
       {
         title: "Core",
         tier: "core",
-        exercises: [{ name: "Ab Roll with Wheel", target: "2 sets", logType: "reps" }],
+        exercises: [
+          {
+            name: "Ab Roll with Wheel",
+            target: "2 sets",
+            logType: "reps",
+            alternates: [{ name: "Palloff Press", target: "2 sets" }],
+          },
+        ],
+      },
+      {
+        title: "Upper — Pull + Press",
+        tier: "compound",
+        note: "First thing to cut if time's short.",
+        exercises: [
+          { name: "Pull Ups", target: "3 sets — stop 1–2 reps short of failure", logType: "reps" },
+          { name: "Overhead Dumbbell Press", target: OHP_TARGET },
+        ],
       },
     ],
   },
   tue: {
     label: "Tuesday",
     short: "Tue",
-    title: "Compound A — Squat + Upper Pull",
-    note: "Full session. Motor control then squats; upper pull is the first thing to cut if time is short.",
+    title: "Compound A — Squat",
+    note: "Full session. Motor control, then squats. Upper body is the first thing to cut if time is short — Monday now covers pull and press.",
     duration: "45–50 min",
     blocks: [
       MOTOR_CONTROL_BLOCK,
@@ -108,7 +126,10 @@ export const PROGRAM = {
         title: "Lower",
         tier: "compound",
         exercises: [
-          { name: "Split Squat", target: "10 reps, 2s hold, 3 sets — cleared to load" },
+          {
+            name: "Split Squat",
+            target: "2–3 sets × 10, 2s hold at the bottom — comfortable depth; the hip reacts at full depth with the right leg back",
+          },
           {
             name: "Squat (Barbell)",
             target: "3–4 sets — weights racked at shoulders",
@@ -123,31 +144,21 @@ export const PROGRAM = {
           {
             name: "Cable Chop, High to Low",
             target: "2 sets",
-            alternates: [
-              { name: "Hip Flexor Drive with Oblique Twist", target: "2 sets", logType: "reps" },
-              { name: "Palloff Press", target: "2 sets" },
-            ],
+            alternates: [{ name: "Palloff Press", target: "2 sets" }],
           },
           { name: "Ab Roll with Wheel", target: "2 sets", logType: "reps" },
         ],
       },
       {
-        title: "If time — Upper Pull",
+        title: "If time — Upper",
         tier: "compound",
         exercises: [
           {
-            name: "Overhead Farmers Carry",
-            target: "2 sets",
-            alternates: [
-              { name: "Farmers Carry", target: "2 sets" },
-              { name: "Overhead Dumbbell Press", target: "3 sets" },
-            ],
+            name: "Overhead Dumbbell Press",
+            target: OHP_TARGET,
+            alternates: [{ name: "Overhead Farmers Carry", target: "2 sets" }],
           },
-          {
-            name: "Lat Pull Down",
-            target: "10 reps, 2s hold, 3 sets",
-            alternates: [{ name: "Pull Ups", target: "3 sets, 8–10 reps", logType: "reps" }],
-          },
+          { name: "Pull Ups", target: "3 sets, 8–10 reps", logType: "reps" },
           { name: "Supermans (hold + swimmers)", target: "2 sets", logType: "reps" },
         ],
       },
@@ -156,8 +167,8 @@ export const PROGRAM = {
   thu: {
     label: "Thursday",
     short: "Thu",
-    title: "Compound B — Deadlift + Upper Push",
-    note: "Full session. Motor control then deadlifts; upper push is the first thing to cut if time is short.",
+    title: "Compound B — Deadlift + Upper",
+    note: "Full session. Motor control, then deadlifts. Upper body is the first thing to cut if time is short.",
     duration: "45–50 min",
     blocks: [
       MOTOR_CONTROL_BLOCK,
@@ -176,29 +187,16 @@ export const PROGRAM = {
           {
             name: "Cable Chop, Low to High",
             target: "2 sets",
-            alternates: [
-              { name: "Hip Flexor Drive with Oblique Twist", target: "2 sets", logType: "reps" },
-              { name: "Palloff Press", target: "2 sets" },
-            ],
+            alternates: [{ name: "Palloff Press", target: "2 sets" }],
           },
-          {
-            name: "Stability Ball Figure 8s",
-            target: "2 sets",
-            logType: "reps",
-            alternates: [{ name: "Ab Roll with Wheel", target: "2 sets", logType: "reps" }],
-          },
+          { name: "Ab Roll with Wheel", target: "2 sets", logType: "reps" },
         ],
       },
       {
-        title: "If time — Upper Push",
+        title: "If time — Upper",
         tier: "compound",
         exercises: [
-          {
-            name: "Push Ups",
-            target: "3 sets",
-            logType: "reps",
-            alternates: [{ name: "Dumbbell Chest Press", target: "3 sets" }],
-          },
+          { name: "Dumbbell Chest Press", target: "3 sets × 8–12, per hand" },
           {
             name: "Cable Rows",
             target: "3 sets",
@@ -242,12 +240,7 @@ export const PROGRAM = {
           title: "Upper Pull",
           tier: "compound",
           exercises: [
-            {
-              name: "Pull Ups",
-              target: "3 sets — stop 1–2 reps short of failure",
-              logType: "reps",
-              alternates: [{ name: "Lat Pull Down", target: "3 sets × 8–12, last set close to failure" }],
-            },
+            { name: "Pull Ups", target: "3 sets — stop 1–2 reps short of failure", logType: "reps" },
             {
               name: "Cable Rows",
               target: "3 sets × 10–12 — controlled, last set close to failure",
@@ -259,18 +252,11 @@ export const PROGRAM = {
           title: "Upper Push",
           tier: "compound",
           exercises: [
-            {
-              name: "Dumbbell Chest Press",
-              target: "3 sets × 8–12, per hand — last set close to failure",
-              alternates: [{ name: "Push Ups", target: "3 sets — stop 1–2 reps short of failure", logType: "reps" }],
-            },
+            { name: "Dumbbell Chest Press", target: "3 sets × 8–12, per hand — last set close to failure" },
             {
               name: "Overhead Dumbbell Press",
-              target: "3 sets × 8–12, per hand",
-              alternates: [
-                { name: "Overhead Farmers Carry", target: "2 sets" },
-                { name: "Farmers Carry", target: "2 sets" },
-              ],
+              target: OHP_TARGET,
+              alternates: [{ name: "Overhead Farmers Carry", target: "2 sets" }],
             },
           ],
         },
@@ -324,6 +310,66 @@ export function todayKey() {
 // is the opposite of the plan.
 
 export const SESSION_NOTES = {
+  "2026-10-30": {
+    headline: "Friday - elliptical, RPE 8 again",
+    why: "Four Fridays running on the elliptical or arc trainer, at RPE 8, 7, 7, 8. The intervals are finally consistent. Same again.",
+    stopRules: [
+      "RPE 8 on the work intervals. Ease off if you hit 9.",
+      "Back check-in this morning, after Thursday's deadlift.",
+    ],
+    adjustments: {},
+  },
+  "2026-10-29": {
+    headline: "Thursday - the deadlift gets this week's step",
+    why: "Last Thursday you ramped to one set at 140 and the back was 100% the next day. On 15 Oct, three sets at 140 left it used for days. So this week's step is a second working set at 140, not more weight. Rows were 130 x 12 on every set, so they can go up.",
+    stopRules: [
+      "Deadlift: ramp 120, 130, then 140 x 10 x 2. If Tuesday's squats left the back sensitive, stop at one set of 140.",
+      "Rows 140 x 10 x 3.",
+      "Chest press: get 50 x 12 on all three sets before going to 55. Tuesday was 12, 12, 7.",
+      "Back check-in Friday and Saturday.",
+    ],
+    adjustments: {
+      "Deadlift": { tone: "go", tag: "2nd set at 140", detail: "Ramp 120, 130, then 140 x 10 x 2. Not more weight yet." },
+      "Cable Rows": { tone: "go", tag: "Step up", detail: "140 x 10 x 3. 130 x 12 was done on all three sets." },
+      "Dumbbell Chest Press": { tone: "ease", tag: "Build reps", detail: "50 x 12 across, per hand, before 55." },
+    },
+  },
+  "2026-10-27": {
+    headline: "Tuesday - squat holds at 180, split squat gets its 2s hold",
+    why: "180 x 12 x 3 last week was a 20 lb jump and felt easy. The back was a tiny bit sensitive the next day and clear by Thursday, which is a much milder reaction than after the 15 Oct deadlift. Still one spine-loading step a week: the squat jumped last week, so it holds, and Thursday's deadlift gets the step.",
+    stopRules: [
+      "Squat 180 x 12 x 3 again. Confirm it before 185.",
+      "Split squat 80 x 10 with the 2s hold at the bottom (your note: you keep skipping it). Comfortable depth only.",
+      "Monday did pull and press, so skip the upper block or keep it to 1-2 sets.",
+      "Back check-in Wednesday morning.",
+    ],
+    adjustments: {
+      "Squat (Barbell)": { tone: "ease", tag: "Hold 180", detail: "180 x 12 x 3 again. The deadlift gets this week's step." },
+      "Split Squat": { tone: "go", tag: "2s hold", detail: "80 x 10, 2s hold at the bottom, comfortable depth." },
+      "Overhead Dumbbell Press": { tone: "skip", tag: "Done Mon", detail: "Skip, or 1 light set." },
+      "Pull Ups": { tone: "skip", tag: "Done Mon", detail: "Skip, or 1 set." },
+    },
+  },
+  "2026-10-26": {
+    headline: "Monday - the new Monday, adding a set before adding weight",
+    why: "Monday is now in the app the way you've been doing it: hip block, thrusters, pull-ups, press. Last Monday's thrusters went to 130 x 20 for 2 sets, so today make it 3 sets before adding weight. The press stalled at 40 (45 wouldn't go up), so build reps at 40 rather than forcing 45. There's no back data since Thursday's deadlift, so check in.",
+    stopRules: [
+      "Thrusters 130 x 20 x 3. A third set before more weight.",
+      "Press 40 per hand, aiming for 12, 12, 10. Stop short of lockout if the right shoulder loses control.",
+      "Weighted Airplane at 15 lb, where your balance held. Step-downs 20-25 lb, grade stays L5.",
+      "Check-in: back as well as hip. Nothing logged since Thursday's deadlift.",
+    ],
+    adjustments: {
+      "Hip Thrusters": { tone: "go", tag: "Add a set", detail: "130 x 20 x 3. Last week was 2 sets." },
+      "Overhead Dumbbell Press": {
+        tone: "ease",
+        tag: "Build reps",
+        detail: "40 x 12, 12, 10 before trying 45. Stop short of lockout on the right if control goes.",
+      },
+      "Airplane": { tone: "go", tag: "15 lb", detail: "Balance held at 15, not 20. Stay there for now." },
+      "Pull Ups": { tone: "go", tag: "3 sets", detail: "8, 8 last Monday. Aim for 8-9 on all three sets." },
+    },
+  },
   "2026-10-23": {
     headline: "Friday - elliptical again, and check in on the back",
     why: "Two elliptical sessions at RPE 7 in a row, which is the intervals finally being done consistently. The protocol target is around 8, so let the last two rounds reach it. Today is also the day after the deadlift, so the back check-in matters more than the intervals do.",
