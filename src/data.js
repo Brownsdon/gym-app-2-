@@ -75,8 +75,10 @@ const OHP_TARGET =
 
 // Oct 2026: alternates that were never logged in four months were removed
 // (Single Leg Sit to Stand, Hip Hike + Step Down slot, Hip Flexor Drive with
-// Oblique Twist, Farmers Carry, Lat Pull Down, Stability Ball Figure 8s,
-// Push Ups). All are in Claire's plan — restore from git history if needed.
+// Oblique Twist, Lat Pull Down, Stability Ball Figure 8s, Push Ups). All are
+// in Claire's plan — restore from git history if needed. Farmers Carry came
+// back in Nov: the hip now catches when carrying the kids, and carrying is
+// the pattern it trains.
 export const PROGRAM = {
   mon: {
     label: "Monday",
@@ -156,7 +158,13 @@ export const PROGRAM = {
           {
             name: "Overhead Dumbbell Press",
             target: OHP_TARGET,
-            alternates: [{ name: "Overhead Farmers Carry", target: "2 sets" }],
+            alternates: [
+              { name: "Overhead Farmers Carry", target: "2 sets" },
+              {
+                name: "Farmers Carry",
+                target: "2 sets. Walk tall, no hip drop. Log weight per hand, and lengths walked as reps",
+              },
+            ],
           },
           { name: "Pull Ups", target: "3 sets, 8–10 reps", logType: "reps" },
           { name: "Supermans (hold + swimmers)", target: "2 sets", logType: "reps" },
@@ -256,7 +264,13 @@ export const PROGRAM = {
             {
               name: "Overhead Dumbbell Press",
               target: OHP_TARGET,
-              alternates: [{ name: "Overhead Farmers Carry", target: "2 sets" }],
+              alternates: [
+              { name: "Overhead Farmers Carry", target: "2 sets" },
+              {
+                name: "Farmers Carry",
+                target: "2 sets. Walk tall, no hip drop. Log weight per hand, and lengths walked as reps",
+              },
+            ],
             },
           ],
         },
@@ -310,6 +324,52 @@ export function todayKey() {
 // is the opposite of the plan.
 
 export const SESSION_NOTES = {
+  "2026-11-13": {
+    headline: "Friday - intervals only if the cold has cleared",
+    why: "Six of the last eight weeks have had an interval session, mostly RPE 7-8 on the elliptical. A missed one while you're ill costs nothing. A hard one with a fever or a chesty cold can cost you a week.",
+    stopRules: [
+      "Any fever, body aches or chest congestion: skip it, and the upper-body option too.",
+      "Head cold only: RPE 7, and stop at 2-3 rounds if it feels wrong.",
+    ],
+    adjustments: {},
+  },
+  "2026-11-12": {
+    headline: "Thursday - deadlift holds, the upper body gets the step",
+    why: "Deadlift has been 140 x 10 x 3 for three sessions with the back quiet, which is the steady state to bring to Claire. Upper body is where the growth is stuck: chest press and overhead press have been flat for three months. If the cold has knocked you about this week, go about 10% lighter on everything.",
+    stopRules: [
+      "Deadlift 140 x 10 x 3 again. If you're still run-down, 130.",
+      "Chest press: 50 x 12 was done on all three sets, so go to 55 per hand.",
+      "Rows 145 x 12 for 3 sets (last time was 2).",
+    ],
+    adjustments: {
+      "Deadlift": { tone: "ease", tag: "Hold 140", detail: "140 x 10 x 3. Bring a steady number to Claire." },
+      "Dumbbell Chest Press": { tone: "go", tag: "Step up", detail: "55 per hand. 50 x 12 was done on all three sets." },
+      "Cable Rows": { tone: "go", tag: "3rd set", detail: "145 x 12 x 3." },
+    },
+  },
+  "2026-11-10": {
+    headline: "Tuesday - back after the cold, carries back in",
+    why: "Monday is off for the cold. First session back runs about 10% light. The squat jumped to 200 last week, so it holds until Claire. Farmers Carry is back in the upper block, because the hip has been catching when you carry the kids, and carrying is what it trains.",
+    stopRules: [
+      "Fever, body aches or a chesty cold: rest, not a light session. Head cold only: a light session is fine.",
+      "Squat 180 x 12 x 3 if you're still run-down, 200 x 12 x 3 if you're fully well. Not more.",
+      "Farmers Carry: moderate weight, walk tall, no hip drop. Note any catching.",
+      "Carrying the kids: note which side and whether the hip caught.",
+    ],
+    adjustments: {
+      "Squat (Barbell)": { tone: "ease", tag: "Hold", detail: "180 if run-down, 200 if fully well. Hold here until Claire." },
+      "Farmers Carry": {
+        tone: "go",
+        tag: "Back in",
+        detail: "Moderate weight, walk tall, no hip drop. Note if the hip catches.",
+      },
+      "Overhead Dumbbell Press": {
+        tone: "swap",
+        tag: "Or carry",
+        detail: "Switch to Farmers Carry today, the variant that matches the catches you've been getting.",
+      },
+    },
+  },
   "2026-10-30": {
     headline: "Friday - elliptical, RPE 8 again",
     why: "Four Fridays running on the elliptical or arc trainer, at RPE 8, 7, 7, 8. The intervals are finally consistent. Same again.",
